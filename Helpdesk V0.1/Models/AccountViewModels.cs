@@ -49,9 +49,8 @@ namespace Helpdesk_V0._1.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "User")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -64,6 +63,11 @@ namespace Helpdesk_V0._1.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [StringLength(256, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        [Display(Name = "Name")]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

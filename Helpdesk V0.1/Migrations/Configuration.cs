@@ -12,7 +12,7 @@ namespace Helpdesk_V0._1.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Helpdesk_V0._1.Models.ApplicationDbContext context)
@@ -42,9 +42,9 @@ namespace Helpdesk_V0._1.Migrations
                 roleManager.Create(new IdentityRole("Customer"));
             }
 
-            var user = new ApplicationUser { UserName = "admin" };
+            var user = new ApplicationUser { UserName = "admin", Email = "Helpdesk@connect-it.com", Company = "All", LockoutEnabled = true };
 
-            if (userManager.FindByName("admin") == null)
+            if (userManager.FindByName(user.UserName) == null)
             {
                 var result = userManager.Create(user, "W3lkom!");
 
