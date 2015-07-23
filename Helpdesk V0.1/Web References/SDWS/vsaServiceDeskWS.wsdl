@@ -1,0 +1,1763 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="vsaServiceDeskWS" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://www.kaseya.com/vsa/2007/12/ServiceDeskDefinition.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="vsaServiceDeskWS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="vsaServiceDeskWS">
+      <s:import namespace="http://www.kaseya.com/vsa/2007/12/ServiceDeskDefinition.xsd" />
+      <s:element name="GetServiceDesks">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:GetServiceDesksRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetServiceDesksRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="RequestBase" abstract="true" />
+      <s:element name="GetServiceDesksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetServiceDesksResult" type="tns:GetServiceDesksResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetServiceDesksResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ServiceDesks" type="tns:ArrayOfServiceDesk" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ResponseBase" abstract="true" />
+      <s:complexType name="ArrayOfServiceDesk">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ServiceDesk" nillable="true" type="tns:ServiceDesk" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ServiceDesk">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IsDefault" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ServiceDeskID" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskName" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetServiceDesk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:GetServiceDeskRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetServiceDeskRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskDefinitionRequest" type="s1:ServiceDeskDefinitionRequest" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetServiceDeskResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetServiceDeskResult" type="tns:GetServiceDeskResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetServiceDeskResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskDefinitionResponse" type="s1:ServiceDeskDefinition" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:GetIncidentReq" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentReq">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentRequest" type="s1:GetIncidentRequest" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIncidentResult" type="tns:GetIncidentResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentResponse" type="s1:Incident" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncidentList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:GetIncidentListRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentListRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="_ReturnDescription" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentListRequest" type="s1:IncidentListFilter" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="ReturnDescription" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncidentListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIncidentListResult" type="tns:GetIncidentListResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentListResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentList" type="s1:IncidentList" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncidentList2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:GetIncidentList2Request" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentList2Request">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="_ReturnDescription" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentListRequest" type="s1:IncidentListFilter2" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="ReturnDescription" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="GetIncidentList2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIncidentList2Result" type="tns:GetIncidentList2Response" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetIncidentList2Response">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentList" type="s1:IncidentList2" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="AddIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:AddIncidentRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AddIncidentRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="AddSDIncident" type="s1:Incident" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="AddIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddIncidentResult" type="tns:AddIncidentResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AddIncidentResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="AddSDIncidentResponse" type="s1:CreateIncidentResponse" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="LocateQueuedAddIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:LocateQueuedAddIncidentRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="LocateQueuedAddIncidentRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="LocateQueuedAddIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LocateQueuedAddIncidentResult" type="tns:LocateQueuedAddIncidentResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="LocateQueuedAddIncidentResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IncidentNumber" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="QueueAddIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:AddIncidentRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueueAddIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueueAddIncidentResult" type="tns:QueueAddIncidentResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="QueueAddIncidentResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="UpdateIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:UpdateIncidentRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UpdateIncidentRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="UpdateSDIncident" type="s1:Incident" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="UpdateIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateIncidentResult" type="tns:UpdateIncidentResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="UpdateIncidentResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="AddServDeskToScope">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="req" type="tns:AddServDeskToScopeRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AddServDeskToScopeRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="servDeskName" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="scopeName" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="SessionID" type="s:decimal" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="AddServDeskToScopeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddServDeskToScopeResult" type="tns:AddServDeskToScopeResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AddServDeskToScopeResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Method" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="TransactionID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorLocation" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="PrimitiveGetServiceDesk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetServiceDeskResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveGetServiceDeskResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetServiceDesks">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetServiceDesksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveGetServiceDesksResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveGetIncidentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetIncidentList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveGetIncidentListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveGetIncidentListResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveUpdateIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveUpdateIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveUpdateIncidentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveAddIncident">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveAddIncidentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveAddIncidentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveAddServDeskToScope">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="XmlRequest" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PrimitiveAddServDeskToScopeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PrimitiveAddServDeskToScopeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.kaseya.com/vsa/2007/12/ServiceDeskDefinition.xsd">
+      <s:complexType name="ServiceDeskDefinitionRequest">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskID" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ServiceDeskDefinition">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="RequireTime" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="DisplayMachineInfo" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="RequireMachineInfo" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="DisplayOrgInfo" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="RequireOrgInfo" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="DisplayCI" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="RequireCI" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AllAdmins" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AutoStartClock" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AutoSaveClock" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AutoInsertNote" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AutoInsertNoteHidden" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="NeedStatusNote" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="SDPrefix" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultStatus" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultStage" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultPriority" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultSeverity" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultResolution" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultCategory" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultSubCategory" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="DefaultServiceDesk" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="TemplateName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TemplateType" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskType" type="s1:ServiceDeskType" />
+          <s:element minOccurs="0" maxOccurs="1" name="SequenceName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EditingTemplate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserEditingTemplate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShowNotesPane" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShowWorkOrders" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShowSessionTimers" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ShowTasks" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AllowDeleteNote" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="sdProcedureAutoDST" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="sdProcedureTZName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="emailDisplayName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="autoArchiveTime" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstimatedHours" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="ActualHours" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmailReader" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Administrator" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DefaultPolicy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Priority" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Severity" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Resolution" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaskStatus" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Categories" type="s1:ArrayOfCategoryItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Stages" type="s1:ArrayOfStageItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Participants" type="s1:ArrayOfParticipant" />
+          <s:element minOccurs="0" maxOccurs="1" name="CurrentContact" type="s1:SelectedContact" />
+          <s:element minOccurs="0" maxOccurs="1" name="SubmitterTypes" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomFields" type="s1:ArrayOfCustomFieldType" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AccessRights" type="s1:AccessRights" />
+          <s:element minOccurs="0" maxOccurs="1" name="NoteTemplates" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="ChangeProcedure" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ChangeProcedureID" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="GoalProcedure" type="s1:TimedProcedure" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResourceTypes" type="s1:ArrayOfRefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaskDefinitions" type="s1:ArrayOfTaskDefinition" />
+          <s:element minOccurs="0" maxOccurs="1" name="AssocPolicies" type="s1:ArrayOfAssocPolicy" />
+          <s:element minOccurs="0" maxOccurs="1" name="MasterUnassignedOnly" type="s:string" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" />
+      </s:complexType>
+      <s:simpleType name="ServiceDeskType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Incident" />
+          <s:enumeration value="ServiceRequest" />
+          <s:enumeration value="KnowledgeBase" />
+          <s:enumeration value="ChangeRequest" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfRefItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Item" type="s1:RefItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RefItem">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="ref" type="s:string" />
+            <s:attribute name="id" type="s:decimal" use="required" />
+            <s:attribute name="description" type="s:string" />
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
+      <s:complexType name="Participant">
+        <s:simpleContent>
+          <s:extension base="s1:RefItem">
+            <s:attribute name="isPool" type="s:boolean" use="required" />
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfCategoryItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Category" type="s1:CategoryItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CategoryItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Item" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SubCategory" type="s1:RefItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfStageItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Stage" type="s1:StageItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="StageItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Item" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="Location" type="s1:Location" />
+          <s:element minOccurs="0" maxOccurs="1" name="Initialization" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Escalation" type="s1:TimedProcedure" />
+          <s:element minOccurs="0" maxOccurs="1" name="Goal" type="s1:TimedProcedure" />
+          <s:element minOccurs="0" maxOccurs="1" name="Exit" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="NextStage" type="s1:RefItem" />
+        </s:sequence>
+        <s:attribute name="stageType" type="s1:TransitionType" use="required" />
+        <s:attribute name="initializationID" type="s:decimal" />
+        <s:attribute name="exitID" type="s:decimal" />
+      </s:complexType>
+      <s:complexType name="Location">
+        <s:attribute name="x" type="s:int" />
+        <s:attribute name="y" type="s:int" />
+        <s:attribute name="width" type="s:int" />
+        <s:attribute name="height" type="s:int" />
+      </s:complexType>
+      <s:complexType name="TimedProcedure">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="time" type="s:int" use="required" />
+            <s:attribute name="unit" type="s1:TimeInterval" use="required" />
+            <s:attribute name="id" type="s:decimal" />
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
+      <s:simpleType name="TimeInterval">
+        <s:restriction base="s:string">
+          <s:enumeration value="SECOND" />
+          <s:enumeration value="MINUTE" />
+          <s:enumeration value="HOUR" />
+          <s:enumeration value="DAY" />
+          <s:enumeration value="WEEK" />
+          <s:enumeration value="WEEKDAY" />
+          <s:enumeration value="MONTH" />
+          <s:enumeration value="YEAR" />
+          <s:enumeration value="QUARTER" />
+          <s:enumeration value="RUNONCE" />
+          <s:enumeration value="BUSINESSDAY" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TransitionType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Begin" />
+          <s:enumeration value="Middle" />
+          <s:enumeration value="End" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfParticipant">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Participant" type="s1:Participant" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SelectedContact">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ContactName" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="PhoneNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Organization" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmailAddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrgAddress" type="s1:OrgAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomerRegion" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OrgAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Address" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfCustomFieldType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Field" type="s1:CustomFieldType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CustomFieldType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Caption" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FieldName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FieldFormat" type="s1:FieldFormat" />
+          <s:element minOccurs="0" maxOccurs="1" name="DefaultValue" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Values" type="s1:ArrayOfRefItem" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" use="required" />
+      </s:complexType>
+      <s:simpleType name="FieldFormat">
+        <s:restriction base="s:string">
+          <s:enumeration value="Boolean" />
+          <s:enumeration value="String" />
+          <s:enumeration value="Date" />
+          <s:enumeration value="Datetime" />
+          <s:enumeration value="Amt" />
+          <s:enumeration value="Integer" />
+          <s:enumeration value="Quantity" />
+          <s:enumeration value="Rate" />
+          <s:enumeration value="List" />
+          <s:enumeration value="MultiLineString" />
+          <s:enumeration value="RichText" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="AccessRights">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="RoleName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RoleType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RoleEditingTemplate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ViewHiddenNotes" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ChangeHiddenNotes" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="FieldRights" type="s1:ArrayOfFieldRight" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFieldRight">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FieldRight" type="s1:FieldRight" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FieldRight">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FieldName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="AccessType" type="s1:AccessType" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="AccessType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Hidden" />
+          <s:enumeration value="ViewOnly" />
+          <s:enumeration value="Edit" />
+          <s:enumeration value="Required" />
+          <s:enumeration value="Checked" />
+          <s:enumeration value="HiddenChecked" />
+          <s:enumeration value="RequiredWithNote" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfTaskDefinition">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Item" type="s1:TaskDefinition" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TaskDefinition">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Summary" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaskType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstimatedHours" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="DefaultResourceType" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="DefaultTaskStatus" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Approver" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Billable" type="s:boolean" />
+        </s:sequence>
+        <s:attribute name="taskNumber" type="s:int" use="required" />
+        <s:attribute name="id" type="s:decimal" />
+      </s:complexType>
+      <s:complexType name="TaskDetail">
+        <s:complexContent mixed="false">
+          <s:extension base="s1:TaskDefinition">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="StartDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="EndDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="UpdateTime" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="FollowupDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="CompletionDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="ApprovalDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="PromiseDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="PercentComplete" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="TaskStatus" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ActualHours" type="s:double" />
+              <s:element minOccurs="0" maxOccurs="unbounded" name="Resource" type="s1:TaskResource" />
+              <s:element minOccurs="0" maxOccurs="unbounded" name="Assignee" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="TaskResource">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ResourceType" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="BillingRate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mileage" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="HoursWorked" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfAssocPolicy">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AssocPolicy" type="s1:AssocPolicy" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AssocPolicy">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OSType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MachineGroup" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Organization" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrgType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="AssocType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Policy" type="s:string" />
+        </s:sequence>
+        <s:attribute name="ref" type="s:string" />
+      </s:complexType>
+      <s:complexType name="GetIncidentRequest">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentId" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncludeNotes" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncludeDefinition" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncludeAttachments" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Incident">
+        <s:complexContent mixed="false">
+          <s:extension base="s1:IncidentSummary">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IsParticipant" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IsClosed" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="CurrentStageEscalationDateTime" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="CurrentGoalDateTime" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="Owner" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Participant" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="AssigneeType" type="s1:AssigneeType" />
+              <s:element minOccurs="0" maxOccurs="1" name="Assignee" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="AssigneeEmail" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ActualCompletionDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="ExpectedCompletionDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="ActualResolutionDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="PromisedDate" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="IsArchived" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IsError" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="IsPoolAssignee" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Notify" type="s:boolean" />
+              <s:element minOccurs="0" maxOccurs="1" name="CurrentStage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ResolutionNote" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="LockTime" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="LockUser" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="StageGoalTimeRemaining" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="SourceType" type="s1:SourceType" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrgAddress" type="s1:OrgAddress" />
+              <s:element minOccurs="0" maxOccurs="1" name="CustomFields" type="s1:ArrayOfCustomField" />
+              <s:element minOccurs="0" maxOccurs="1" name="Notes" type="s1:ArrayOfNote" />
+              <s:element minOccurs="0" maxOccurs="1" name="Attachments" type="s1:ArrayOfAttachment" />
+              <s:element minOccurs="0" maxOccurs="1" name="RelatedIncidents" type="s1:ArrayOfRelatedIncident" />
+              <s:element minOccurs="0" maxOccurs="unbounded" name="Task" type="s1:TaskDetail" />
+              <s:element minOccurs="0" maxOccurs="1" name="EstimatedHours" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="TotalHours" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="PreviousStage" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="WorkPerformedDateTime" type="s:dateTime" />
+              <s:element minOccurs="0" maxOccurs="1" name="EditingTemplate" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="AdditionalContacts" type="s1:ArrayOfAdditionalContact" />
+              <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskDefinition" type="s1:ServiceDeskDefinition" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="IncidentSummary">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Summary" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Priority" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Resolution" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Stage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Severity" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Category" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SubCategory" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Policy" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CreateDateTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="LastEditDateTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="CloseDateTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrgID" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Organization" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WorkOrder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationStaffName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationStaff" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationStaffEmail" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Machine" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MachineGuid" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="MachineGroup" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MachineGroupGuid" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Submitter" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SubmitterEmail" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SubmitterPhone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SubmitterType" type="s1:SubmitterType" />
+          <s:element minOccurs="0" maxOccurs="1" name="IsUnread" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="InventoryAssetID" type="s:decimal" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" />
+      </s:complexType>
+      <s:simpleType name="SubmitterType">
+        <s:restriction base="s:string">
+          <s:enumeration value="UNKNOWN" />
+          <s:enumeration value="PARTICIPANT" />
+          <s:enumeration value="USER" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="IncidentSummary2">
+        <s:complexContent mixed="false">
+          <s:extension base="s1:IncidentSummary">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="CustomFields" type="s1:ArrayOfCustomField" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfCustomField">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Field" type="s1:CustomField" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CustomField">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="fieldName" type="s:string" />
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
+      <s:simpleType name="AssigneeType">
+        <s:restriction base="s:string">
+          <s:enumeration value="UNKNOWN" />
+          <s:enumeration value="PARTICIPANT" />
+          <s:enumeration value="POOL" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="SourceType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Email" />
+          <s:enumeration value="BUDR" />
+          <s:enumeration value="KES" />
+          <s:enumeration value="Patch" />
+          <s:enumeration value="Monitor" />
+          <s:enumeration value="Alarm" />
+          <s:enumeration value="Portal" />
+          <s:enumeration value="ServiceDesk" />
+          <s:enumeration value="Other" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfNote">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Note" type="s1:Note" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Note">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="User" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Timestamp" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Text" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Hidden" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="HoursWorked" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="SuppressNotify" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaskNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Billable" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="OverrideBillRate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="DateStarted" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="SystemFlag" type="s:boolean" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" />
+        <s:attribute name="delete" type="s:boolean" />
+        <s:attribute name="sessionTimeID" type="s:string" />
+      </s:complexType>
+      <s:complexType name="WorkOrderNote">
+        <s:complexContent mixed="false">
+          <s:extension base="s1:Note">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="WorkOrderActivityID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ActivityTypeID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="ResourceTypeID" type="s:decimal" />
+              <s:element minOccurs="0" maxOccurs="1" name="IncludeOnInvoice" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfAttachment">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Attachment" type="s1:Attachment" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Attachment">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DisplayName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DocumentType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Content" type="s:base64Binary" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" />
+      </s:complexType>
+      <s:complexType name="ArrayOfRelatedIncident">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Incident" type="s1:RelatedIncident" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RelatedIncident">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Summary" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+        </s:sequence>
+        <s:attribute name="id" type="s:decimal" />
+      </s:complexType>
+      <s:complexType name="ArrayOfAdditionalContact">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AdditionalContact" type="s1:AdditionalContact" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AdditionalContact">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Contact" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="ContactGroup" type="s1:ContactGroup" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hours" type="s1:RefItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ContactGroup">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="GroupName" type="s1:RefItem" />
+          <s:element minOccurs="0" maxOccurs="1" name="GroupType" type="s1:RefItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CreateUpdateIncidentRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="s1:Incident" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="IncidentListFilter">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceDeskName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Priority" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Stage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SummarySearch" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Organization" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationStaff" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Machine" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MachineGroup" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Assignee" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StartingIncident" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentCount" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="SortField" type="s1:IncidentFilterSort" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="IncidentFilterSort">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="ascending" type="s:boolean" />
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
+      <s:complexType name="IncidentList">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Incident" type="s1:IncidentSummary" />
+        </s:sequence>
+        <s:attribute name="totalIncidents" type="s:int" />
+        <s:attribute name="nextStartingIncident" type="s:string" />
+      </s:complexType>
+      <s:complexType name="IncidentListFilter2">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Field" type="s1:IncidentListFilterField" />
+          <s:element minOccurs="0" maxOccurs="1" name="SearchText" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StartingIncident" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentCount" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="SortField" type="s1:IncidentFilterSort" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="IncidentListFilterField">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Value" type="s:string" />
+        </s:sequence>
+        <s:attribute name="fieldName" type="s:string" />
+        <s:attribute name="operator" type="s1:IncidentListFilterOperator" />
+      </s:complexType>
+      <s:simpleType name="IncidentListFilterOperator">
+        <s:restriction base="s:string">
+          <s:enumeration value="Null" />
+          <s:enumeration value="NotNull" />
+          <s:enumeration value="LessThan" />
+          <s:enumeration value="LessThanOrEqual" />
+          <s:enumeration value="GreaterThan" />
+          <s:enumeration value="GreaterThanOrEqual" />
+          <s:enumeration value="EqualTo" />
+          <s:enumeration value="NotEqualTo" />
+          <s:enumeration value="Like" />
+          <s:enumeration value="NotLike" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="IncidentList2">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Incident" type="s1:IncidentSummary2" />
+        </s:sequence>
+        <s:attribute name="totalIncidents" type="s:int" />
+        <s:attribute name="nextStartingIncident" type="s:string" />
+      </s:complexType>
+      <s:complexType name="CreateIncidentResponse">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="IncidentNumber" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IncidentID" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetServiceDesksSoapIn">
+    <wsdl:part name="parameters" element="tns:GetServiceDesks" />
+  </wsdl:message>
+  <wsdl:message name="GetServiceDesksSoapOut">
+    <wsdl:part name="parameters" element="tns:GetServiceDesksResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetServiceDeskSoapIn">
+    <wsdl:part name="parameters" element="tns:GetServiceDesk" />
+  </wsdl:message>
+  <wsdl:message name="GetServiceDeskSoapOut">
+    <wsdl:part name="parameters" element="tns:GetServiceDeskResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:GetIncident" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:GetIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetIncidentList" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetIncidentListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentList2SoapIn">
+    <wsdl:part name="parameters" element="tns:GetIncidentList2" />
+  </wsdl:message>
+  <wsdl:message name="GetIncidentList2SoapOut">
+    <wsdl:part name="parameters" element="tns:GetIncidentList2Response" />
+  </wsdl:message>
+  <wsdl:message name="AddIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:AddIncident" />
+  </wsdl:message>
+  <wsdl:message name="AddIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:AddIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="LocateQueuedAddIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:LocateQueuedAddIncident" />
+  </wsdl:message>
+  <wsdl:message name="LocateQueuedAddIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:LocateQueuedAddIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueueAddIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:QueueAddIncident" />
+  </wsdl:message>
+  <wsdl:message name="QueueAddIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:QueueAddIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateIncident" />
+  </wsdl:message>
+  <wsdl:message name="UpdateIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddServDeskToScopeSoapIn">
+    <wsdl:part name="parameters" element="tns:AddServDeskToScope" />
+  </wsdl:message>
+  <wsdl:message name="AddServDeskToScopeSoapOut">
+    <wsdl:part name="parameters" element="tns:AddServDeskToScopeResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDeskSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetServiceDesk" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDeskSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetServiceDeskResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDesksSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetServiceDesks" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDesksSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetServiceDesksResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetIncident" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentListSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetIncidentList" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentListSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveGetIncidentListResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveUpdateIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveUpdateIncident" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveUpdateIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveUpdateIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddIncidentSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveAddIncident" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddIncidentSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveAddIncidentResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddServDeskToScopeSoapIn">
+    <wsdl:part name="parameters" element="tns:PrimitiveAddServDeskToScope" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddServDeskToScopeSoapOut">
+    <wsdl:part name="parameters" element="tns:PrimitiveAddServDeskToScopeResponse" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDeskHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDeskHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDesksHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetServiceDesksHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentListHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveGetIncidentListHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveUpdateIncidentHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveUpdateIncidentHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddIncidentHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddIncidentHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddServDeskToScopeHttpGetIn">
+    <wsdl:part name="XmlRequest" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="PrimitiveAddServDeskToScopeHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:portType name="vsaServiceDeskWSSoap">
+    <wsdl:operation name="GetServiceDesks">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the ServiceDesks the Logged in User can access.</wsdl:documentation>
+      <wsdl:input message="tns:GetServiceDesksSoapIn" />
+      <wsdl:output message="tns:GetServiceDesksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetServiceDesk">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the Service Desk Definition of the ServiceDeskID or ServiceDeskName submitted.</wsdl:documentation>
+      <wsdl:input message="tns:GetServiceDeskSoapIn" />
+      <wsdl:output message="tns:GetServiceDeskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a ServiceDesk Incident by submitted IncidentNumber or IncidentID.</wsdl:documentation>
+      <wsdl:input message="tns:GetIncidentSoapIn" />
+      <wsdl:output message="tns:GetIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of ServiceDesk Incidents.</wsdl:documentation>
+      <wsdl:input message="tns:GetIncidentListSoapIn" />
+      <wsdl:output message="tns:GetIncidentListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of ServiceDesk Incidents.</wsdl:documentation>
+      <wsdl:input message="tns:GetIncidentList2SoapIn" />
+      <wsdl:output message="tns:GetIncidentList2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Adds a ServiceDesk Incident.</wsdl:documentation>
+      <wsdl:input message="tns:AddIncidentSoapIn" />
+      <wsdl:output message="tns:AddIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LocateQueuedAddIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Locates a QueueAddIncident request status from the transactionID.</wsdl:documentation>
+      <wsdl:input message="tns:LocateQueuedAddIncidentSoapIn" />
+      <wsdl:output message="tns:LocateQueuedAddIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueueAddIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Queues an AddIncident request</wsdl:documentation>
+      <wsdl:input message="tns:QueueAddIncidentSoapIn" />
+      <wsdl:output message="tns:QueueAddIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Updates a ServiceDesk Incident.</wsdl:documentation>
+      <wsdl:input message="tns:UpdateIncidentSoapIn" />
+      <wsdl:output message="tns:UpdateIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddServDeskToScope">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Adds a ServiceDesk to a Scope.</wsdl:documentation>
+      <wsdl:input message="tns:AddServDeskToScopeSoapIn" />
+      <wsdl:output message="tns:AddServDeskToScopeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesk">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetServiceDesk using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetServiceDeskSoapIn" />
+      <wsdl:output message="tns:PrimitiveGetServiceDeskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesks">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetServiceDesks using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetServiceDesksSoapIn" />
+      <wsdl:output message="tns:PrimitiveGetServiceDesksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetIncidentSoapIn" />
+      <wsdl:output message="tns:PrimitiveGetIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncidentList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetIncidentList using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetIncidentListSoapIn" />
+      <wsdl:output message="tns:PrimitiveGetIncidentListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveUpdateIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of UpdateIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveUpdateIncidentSoapIn" />
+      <wsdl:output message="tns:PrimitiveUpdateIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of AddIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveAddIncidentSoapIn" />
+      <wsdl:output message="tns:PrimitiveAddIncidentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddServDeskToScope">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of AddServDeskToScope using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveAddServDeskToScopeSoapIn" />
+      <wsdl:output message="tns:PrimitiveAddServDeskToScopeSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="vsaServiceDeskWSHttpGet">
+    <wsdl:operation name="PrimitiveGetServiceDesk">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetServiceDesk using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetServiceDeskHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveGetServiceDeskHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesks">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetServiceDesks using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetServiceDesksHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveGetServiceDesksHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetIncidentHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveGetIncidentHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncidentList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of GetIncidentList using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveGetIncidentListHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveGetIncidentListHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveUpdateIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of UpdateIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveUpdateIncidentHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveUpdateIncidentHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddIncident">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of AddIncident using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveAddIncidentHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveAddIncidentHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddServDeskToScope">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Primitive Datatype version of AddServDeskToScope using the same xml contract in string form.</wsdl:documentation>
+      <wsdl:input message="tns:PrimitiveAddServDeskToScopeHttpGetIn" />
+      <wsdl:output message="tns:PrimitiveAddServDeskToScopeHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="vsaServiceDeskWSSoap" type="tns:vsaServiceDeskWSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetServiceDesks">
+      <soap:operation soapAction="vsaServiceDeskWS/GetServiceDesks" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServiceDesk">
+      <soap:operation soapAction="vsaServiceDeskWS/GetServiceDesk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/GetIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList">
+      <soap:operation soapAction="vsaServiceDeskWS/GetIncidentList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList2">
+      <soap:operation soapAction="vsaServiceDeskWS/GetIncidentList2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/AddIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LocateQueuedAddIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/LocateQueuedAddIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueueAddIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/QueueAddIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/UpdateIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddServDeskToScope">
+      <soap:operation soapAction="vsaServiceDeskWS/AddServDeskToScope" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesk">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveGetServiceDesk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesks">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveGetServiceDesks" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveGetIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncidentList">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveGetIncidentList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveUpdateIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveUpdateIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddIncident">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveAddIncident" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddServDeskToScope">
+      <soap:operation soapAction="vsaServiceDeskWS/PrimitiveAddServDeskToScope" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="vsaServiceDeskWSSoap12" type="tns:vsaServiceDeskWSSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetServiceDesks">
+      <soap12:operation soapAction="vsaServiceDeskWS/GetServiceDesks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServiceDesk">
+      <soap12:operation soapAction="vsaServiceDeskWS/GetServiceDesk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/GetIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList">
+      <soap12:operation soapAction="vsaServiceDeskWS/GetIncidentList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIncidentList2">
+      <soap12:operation soapAction="vsaServiceDeskWS/GetIncidentList2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/AddIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LocateQueuedAddIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/LocateQueuedAddIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueueAddIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/QueueAddIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/UpdateIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddServDeskToScope">
+      <soap12:operation soapAction="vsaServiceDeskWS/AddServDeskToScope" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesk">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveGetServiceDesk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesks">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveGetServiceDesks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveGetIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncidentList">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveGetIncidentList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveUpdateIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveUpdateIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddIncident">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveAddIncident" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddServDeskToScope">
+      <soap12:operation soapAction="vsaServiceDeskWS/PrimitiveAddServDeskToScope" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="vsaServiceDeskWSHttpGet" type="tns:vsaServiceDeskWSHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="PrimitiveGetServiceDesk">
+      <http:operation location="/PrimitiveGetServiceDesk" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetServiceDesks">
+      <http:operation location="/PrimitiveGetServiceDesks" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncident">
+      <http:operation location="/PrimitiveGetIncident" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveGetIncidentList">
+      <http:operation location="/PrimitiveGetIncidentList" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveUpdateIncident">
+      <http:operation location="/PrimitiveUpdateIncident" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddIncident">
+      <http:operation location="/PrimitiveAddIncident" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PrimitiveAddServDeskToScope">
+      <http:operation location="/PrimitiveAddServDeskToScope" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="vsaServiceDeskWS">
+    <wsdl:port name="vsaServiceDeskWSSoap" binding="tns:vsaServiceDeskWSSoap">
+      <soap:address location="http://helpdesk.viadata.nl:18081/vsaWS/vsaServiceDeskWS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="vsaServiceDeskWSSoap12" binding="tns:vsaServiceDeskWSSoap12">
+      <soap12:address location="http://helpdesk.viadata.nl:18081/vsaWS/vsaServiceDeskWS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="vsaServiceDeskWSHttpGet" binding="tns:vsaServiceDeskWSHttpGet">
+      <http:address location="http://helpdesk.viadata.nl:18081/vsaWS/vsaServiceDeskWS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Helpdesk_V0._1.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Helpdesk_V0_1_KWS_KaseyaWS" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://helpdesk.viadata.nl:18081/vsaWS/KaseyaWS.asmx</Value>
+    </Setting>
+    <Setting Name="Helpdesk_V0_1_SDWS_vsaServiceDeskWS" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://helpdesk.viadata.nl:18081/vsaWS/vsaServiceDeskWS.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
