@@ -10,7 +10,7 @@ namespace Helpdesk_V0._1.Models
     public class ApplicationUser : IdentityUser
     {
         public string Company { get; set; }
-
+        public string ExternalId { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -26,6 +26,8 @@ namespace Helpdesk_V0._1.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
+
+        public DbSet<Setting> Settings { get; set; }
 
         public static ApplicationDbContext Create()
         {

@@ -176,6 +176,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\KaseyaHelper.cs" />
     <Compile Include="Migrations\201507232011526_Added Company string.cs" />
     <Compile Include="Migrations\201507232011526_Added Company string.Designer.cs">
       <DependentUpon>201507232011526_Added Company string.cs</DependentUpon>
@@ -183,7 +184,9 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KaseyaModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\SettingsModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
