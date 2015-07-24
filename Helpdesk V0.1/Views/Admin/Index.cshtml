@@ -1,0 +1,102 @@
+﻿@model Helpdesk_Connect_It.Models.AdminSettings
+@{
+    ViewBag.Title = "Admin";
+}
+
+<table style="width: 550px">
+    <tr><td id="AppSetting" class="header" style="text-align:center; font-weight: bold;">Applicatie Instellingen</td></tr>
+    <tr class="appSettings">
+        <td>
+            <table>
+                <tr>
+                    <td>Kaseya server:</td>
+                    <td>Kaseya gebruiker:</td>
+                    <td>Wachtwoord:</td>
+                    <td>ServiceDesk naam:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="text-box single-line" id="server" name="server" type="text" style="width: 150px;" />
+                        <!--Html.EditorFor(model => model.server, new { style = "width: 100px !important;" })-->
+                    </td>
+                    <td>
+                        <input class="text-box single-line" id="userName" name="userName" type="text" style="width: 125px;" />
+                        <!--Html.EditorFor(model => model.userName, new { style = "width: 100px !important;" })-->
+                    </td>
+                    <td>@Html.PasswordFor(model => model.password, new { style = "width: 125px;" })</td>
+                    <td><div id="servicedeskname"></div></td>
+                    <td><div id="btnSave"></div></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td id="Users"></td>
+    </tr>
+
+</table>
+
+<div style="visibility: hidden">
+    @Html.EditorFor(model => model.servicedeskId)
+    @Html.EditorFor(model => model.servicedeskName)
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var url = '@Url.Action("GetServicedesks")';
+        var cbIndex = 0;
+
+        // prepare the data
+        var source =
+        {
+            datatype: "json",
+            datafields: [
+                { name: 'ServiceDeskID', type: 'int' },
+                { name: 'ServiceDeskName', type: 'string' }
+            ],
+            url: url,
+            async: false
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source, {
+            downloadComplete: function (data, status, xhr) { },
+            loadComplete: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i]['ServiceDeskName'] == '@Model.servicedeskName') {
+                        cbIndex = i;
+                        //alert('Zoeken: ' + i);
+                    }
+                    //alert(data[i]['ServiceDeskName']);
+                }
+                $("#servicedeskname").jqxDropDownList({ selectedIndex: cbIndex });
+            },
+            loadError: function (xhr, status, error) { alert(error); }
+        });
+        // Create a jqxDropDownList
+        $("#servicedeskname").jqxDropDownList({
+            source: dataAdapter, displayMember: "ServiceDeskName", valueMember: "ServiceDeskID", width: 150, height: 25
+        });
+        // subscribe to the select event.
+        $("#servicedeskname").on('select', function (event) {
+            if (event.args) {
+                var item = event.args.item;
+                if (item) {
+                    alert("Value: " + item.value);
+                    alert("Label: " + item.label);
+                    $('#servicedeskId').val(item.value);
+                    $('#servicedeskName').val(item.label);
+                }
+            }
+        });
+        //alert('@Model.password');
+        $("#password").val('@Model.password');
+        $('#server').val('@Model.server');
+        $('#userName').val('@Model.userName')
+    });
+    </script>
+
+
+
+}
+

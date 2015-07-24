@@ -433,6 +433,7 @@
     <Content Include="Web References\KWS\GetVerboseMachineGroupListResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Web References\KWS\KaseyaWS.wsdl" />
     <Content Include="Web References\KWS\LockFunctionAccessResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
@@ -524,7 +525,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
