@@ -1,46 +1,55 @@
-﻿@model Helpdesk_Connect_It.Models.AdminSettings
+﻿@model Helpdesk_V0._1.Models.AdminSettings
 @{
     ViewBag.Title = "Admin";
 }
 
-<table style="width: 550px">
-    <tr><td id="AppSetting" class="header" style="text-align:center; font-weight: bold;">Applicatie Instellingen</td></tr>
-    <tr class="appSettings">
-        <td>
-            <table>
-                <tr>
-                    <td>Kaseya server:</td>
-                    <td>Kaseya gebruiker:</td>
-                    <td>Wachtwoord:</td>
-                    <td>ServiceDesk naam:</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <input class="text-box single-line" id="server" name="server" type="text" style="width: 150px;" />
-                        <!--Html.EditorFor(model => model.server, new { style = "width: 100px !important;" })-->
-                    </td>
-                    <td>
-                        <input class="text-box single-line" id="userName" name="userName" type="text" style="width: 125px;" />
-                        <!--Html.EditorFor(model => model.userName, new { style = "width: 100px !important;" })-->
-                    </td>
-                    <td>@Html.PasswordFor(model => model.password, new { style = "width: 125px;" })</td>
-                    <td><div id="servicedeskname"></div></td>
-                    <td><div id="btnSave"></div></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td id="Users"></td>
-    </tr>
 
-</table>
-
-<div style="visibility: hidden">
-    @Html.EditorFor(model => model.servicedeskId)
-    @Html.EditorFor(model => model.servicedeskName)
+<div class="jumbotron">
+    <h2>Applicatie Instellingen</h2>
 </div>
+<div class="row">
+    <div class="col-md-7 col-md-offset-2 col-xs-12">
+        @using (Html.BeginForm("SaveSettings", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(m => m.server, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.server, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.userName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.userName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.servicedeskName, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    <div id="servicedeskname"></div>
+                    <div style="visibility: hidden">
+                        @Html.TextBoxFor(m => m.servicedeskName, new { @class = "form-control" })
+                        @Html.TextBoxFor(m => m.servicedeskId, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Save" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
 
 @section scripts {
     <script type="text/javascript">
@@ -89,10 +98,6 @@
                 }
             }
         });
-        //alert('@Model.password');
-        $("#password").val('@Model.password');
-        $('#server').val('@Model.server');
-        $('#userName').val('@Model.userName')
     });
     </script>
 

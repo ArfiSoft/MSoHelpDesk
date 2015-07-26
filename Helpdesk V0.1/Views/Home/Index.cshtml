@@ -1,31 +1,225 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+            </hgroup>
+        </div>
+    </section>
+}
+<div>
+    <table style="width: 650px; height: 100px;">
+        <tr>
+            <th style="width: 10%">Zoeken</th>
+            <th style="width: 60%">Status</th>
+            <th><div id="btnSearch" class="button">Zoeken</div></th>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; ">
+                @Html.TextBox("SearchText")
+            </td>
+            <td rowspan="3" colspan="2">
+                <table>
+                    <tr>
+                        <td><div id='cbSolfed' class="checkbox">Opgelost</div></td>
+                        <td><div id='cbUserFeedback' class="checkbox">Wachten op gebruikers feedback</div></td>
+                        <td><div id='cbProssesing' class="checkbox">In behandeling</div></td>
+                    </tr>
+                    <tr>
+                        <td><div id='cbNoted' class="checkbox">Aangenomen</div></td>
+                        <td><div id='cbClosed' class="checkbox">Afgesloten</div></td>
+                        <td><div id='cbRepair' class="checkbox">Reparatie</div></td>
+                    </tr>
+                    <tr>
+                        <td><div id='cbRelease' class="checkbox">Wachten op Release</div></td>
+                        <td><div id='cbRefused' class="checkbox">Geweigerd</div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><div id='btnSelectAll' class="button">Alles selecteren</div></td>
+                        <td><div id='btnUnselectAll' class="button">Alles deselecteren</div></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+    </table>
+</div>
+<div id='jqxWidget'>
+    <!--float: left;-->
+    <div id="jqxgrid" style="font-size: 13px; font-family: Verdana;"> Bezig met laden...</div>
+</div>
+<div style="visibility: hidden">
+    <input type="checkbox" name="valSolfed" id="valSolfed" checked="checked" />
+    <input type="checkbox" name="valUserFeedback" id="valUserFeedback" checked="checked" />
+    <input type="checkbox" name="valProssesing" id="valProssesing" checked="checked" />
+    <input type="checkbox" name="valNoted" id="valNoted" checked="checked" />
+    <input type="checkbox" name="valClosed" id="valClosed" checked="checked" />
+    <input type="checkbox" name="valRepair" id="valRepair" checked="checked" />
+    <input type="checkbox" name="valRelease" id="valRelease" checked="checked" />
+    <input type="checkbox" name="valRefused" id="valRefused" checked="checked" />
+    <input type="text" name="valSearchText" id="valSearchText" value="" />
+</div>
+<div style="visibility:hidden;" id="preIncident"></div>
+<div id="popupWindow">
+    <div id="Title"></div>
+    <div id="content"></div>
+</div>
+<div id="errors">
+    @if (ViewBag.Error.Count > 0)
+    {
+        <ul>
+            @foreach (string error in ViewBag.Error)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    }
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+@section scripts {
+    <script type="text/javascript">
+        function RefreshGrid() {
+            var l = [];
+            if ($("#valSolfed").prop('checked')) { l.push("Opgelost"); }
+            if ($("#valUserFeedback").prop('checked')) { l.push("Wachten op gebruikers feedback"); }
+            if ($("#valProssesing").prop('checked')) { l.push("In behandeling"); }
+            if ($("#valNoted").prop('checked')) { l.push("Aangenomen"); }
+            if ($("#valClosed").prop('checked')) { l.push("Afgesloten"); }
+            if ($("#valRepair").prop('checked')) { l.push("Reparatie"); }
+            if ($("#valRelease").prop('checked')) { l.push("Wachten op Release"); }
+            if ($("#valRefused").prop('checked')) { l.push("Geweigerd"); }
+
+            var req = new IncidentListRequestModel();
+
+            req.options = l;
+            var url = '@Url.Action("GetTickets")';
+            $.post(url, $.param(req, true), null, 'json').always(
+                function (data) {
+                    SetGrid(data);
+                });
+        }
+
+        function IncidentListRequestModel() {
+            var self = this;
+            self.searchText = $("#valSearchText").val();
+            self.options = [];
+        }
+
+        function SetGrid(data) {
+            var source =
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'IncidentNumber', type: 'string' },
+                            { name: 'Summary', type: 'string' },
+                            { name: 'Description', type: 'string' },
+                            { name: 'Status', type: 'string' },
+                            { name: 'Resolution', type: 'string' },
+                            { name: 'Catagory', type: 'string' },
+                            { name: 'IsUnread', type: 'bool' },
+                            { name: 'Stage', type: 'string' },
+                            { name: 'Submitter', type: 'string' },
+                            { name: 'OrganizationName', type: 'string' },
+                            { name: 'Resolution', type: 'string' },
+                        ],
+                        localdata: data.IncidentList
+                        //updaterow: function (rowid, rowdata, commit) {
+                        // synchronize with the server - send update command
+                        // call commit with parameter true if the synchronization with the server is successful
+                        // and with parameter false if the synchronization failder.
+
+                        //commit(true);
+                        //}
+                    };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#jqxgrid").jqxGrid(
+            {
+                width: '900',
+                source: dataAdapter,
+                sortable: true,
+                columnsresize: true,
+                columns: [
+                    { text: 'Ticket', datafield: 'IncidentNumber', width: 110, sortable: true },
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Html.Raw("{ text: 'Klant', datafield: 'OrganizationName', sortable: true },");
+                    }
+                    { text: 'Samenvatting', datafield: 'Summary', sortable: false },
+                    { text: 'Status', datafield: 'Status', sortable: true, width: 150 },
+                    { text: 'Oplossing', datafield: 'Resolution', sortable: true, width: 150 },
+                    {
+                        text: 'Open', datafield: 'Edit', width: 50, columntype: 'button', cellsrenderer: function () {
+                            return "Openen";
+                        }, buttonclick: function (row) {
+                            // open the popup window when the user clicks a button.
+                            editrow = row;
+                            var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', editrow);
+                            openPopUp(dataRecord.IncidentNumber);
+                        }
+                    }
+                ]
+            });
+        }
+
+        function Copysettings() {
+            $("#valSolfed").prop('checked', $("#cbSolfed").jqxCheckBox('checked'));
+            $("#valUserFeedback").prop('checked', $("#cbUserFeedback").jqxCheckBox('checked'));
+            $("#valProssesing").prop('checked', $("#cbProssesing").jqxCheckBox('checked'));
+            $("#valNoted").prop('checked', $("#cbNoted").jqxCheckBox('checked'));
+            $("#valClosed").prop('checked', $("#cbClosed").jqxCheckBox('checked'));
+            $("#valRepair").prop('checked', $("#cbRepair").jqxCheckBox('checked'));
+            $("#valRelease").prop('checked', $("#cbRelease").jqxCheckBox('checked'));
+            $("#valRefused").prop('checked', $("#cbRefused").jqxCheckBox('checked'));
+            $("#valTickedSearch").val($("#SearchTickets").val());
+            $("#valSearchText").val($("#SearchText").val());
+
+        }
+
+        $(document).ready(function () {
+            $('#valSearchText').val('');
+            $('#SearchText').val('');
+            // initialize the popup window and buttons.
+            $('#popupWindow').jqxWindow({ showCollapseButton: true, height: 500, width: 800, autoOpen: false, modalOpacity: 0.01, resizable: false });
+            $(".button").jqxButton();
+            $(".checkbox").jqxCheckBox();
+            $('.checkbox').jqxCheckBox('check');
+            $("#btnSelectAll").bind('click', function (event) {
+                $(".checkbox").jqxCheckBox('check');
+            });
+            $("#btnUnselectAll").bind('click', function (event) {
+                $(".checkbox").jqxCheckBox('uncheck');
+            });
+            $("#btnSearch").bind('click', function (event) {
+                $('#btnSearch').jqxButton('val', 'Bezig...')
+                Copysettings();
+                RefreshGrid();
+                $('#btnSearch').jqxButton('val', 'Zoeken')
+            });
+            RefreshGrid();
+        });
+        function openPopUp(incidentNumber) {
+            var url = '@Url.Action("_Ticket")';
+            $.post(url, $.param({ id: incidentNumber }, true)).always(
+                function (data) {
+                    $("#Title").empty();
+                    $("#Title").html = incidentNumber;
+                    $("#content").empty();
+                    $("#content").html(data);
+                    alert($("#resDay").val());
+                    $("#jqxTabs_Incident").jqxTabs()
+                    alert($("#resYear").val());
+                    $('#popupWindow').jqxWindow('open');
+                    alert($("#resMonth").val());
+                    $("#ActualResolutionDate").jqxDateTimeInput({ value: new Date($("resYear").val(), $("resMonth").val(), $("resDay").val()) });
+                });
+
+        }
+    </script>
+}

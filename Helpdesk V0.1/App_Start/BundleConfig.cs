@@ -21,11 +21,15 @@ namespace Helpdesk_V0._1
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.js",
+                        "~/Scripts/jqwidgets/jqx-all.js",
+                        "~/Scripts/jqwidgets/globalization/globalize.js",
+                        "~/Scripts/jquery.mousewheel.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Scripts/jqwidgets/styles/jqx.base.css"));
         }
     }
 }
