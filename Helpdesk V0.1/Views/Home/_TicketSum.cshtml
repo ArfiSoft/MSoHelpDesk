@@ -1,0 +1,57 @@
+﻿@model Helpdesk_V0._1.Models.IncidentSummaryGridModel
+@{
+    Layout = null;
+}
+
+@{
+    var _readonly = new { @readonly = "readonly" };
+    if (User.IsInRole("admin"))
+    {
+        _readonly = null;
+    }
+
+}
+<div class="row">
+    <div class="col-md-7 col-md-offset-2 col-xs-12">
+        @*controler moet nog gemaakt worden!!*@
+        @using (Html.BeginForm("SaveIncidentSummary", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @*Omschrijving*@
+                @Html.LabelFor(m => m.Description, new { @class = "col-md-2 col-xs-12 control-label" })
+                <div class="col-md-10 col-xs-12">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @*Contact*@
+                @Html.LabelFor(m => m.Submitter, new { @class = "col-md-2 col-xs-12 control-label" })
+                <div class="col-md-10 col-xs-12">
+                    @Html.TextBoxFor(m => m.Submitter, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Stage, new { @class = "col-md-2 col-xs-12 control-label" })
+                <div class="col-md-10 col-xs-12">
+                    @Html.TextBoxFor(m => m.Stage, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            @*@if (Model.Category == "Opgelost" || Model.Stage == "Opgelost" || Model.Status == "Opgelost")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Resolution, new { @class = "col-md-2 col-xs-12 control-label" })
+                    <div class="col-md-10 col-xs-12">
+                        @Html.TextBoxFor(m => m.Resolution, new { @class = "form-control datepicker", @readonly = "readonly" })
+                    </div>
+                </div>
+            }*@
+            
+            @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10 col-xs-6">
+                    <input type="submit" class="btn btn-default" value="Save" />
+                </div>
+            </div>*@
+        }
+    </div>
+</div>

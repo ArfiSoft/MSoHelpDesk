@@ -125,9 +125,9 @@ namespace Helpdesk_V0._1.Helpers
             {
                 try
                 {
-                    if (userManager.FindByName(O.OrgRef) == null)
+                    if (userManager.FindByName(CleanUsername(O.OrgRef)) == null)
                     {
-                        var user = new ApplicationUser { UserName = O.OrgRef, Email = "Helpdesk@connect-it.com", Company = O.OrgName, LockoutEnabled = true };
+                        var user = new ApplicationUser { UserName = CleanUsername(O.OrgRef), Email = "Helpdesk@connect-it.com", Company = O.OrgName, LockoutEnabled = true };
                         var r = userManager.Create(user, defaultPW);
                         if (r.Succeeded)
                         {
@@ -434,7 +434,19 @@ namespace Helpdesk_V0._1.Helpers
 
         #region Private Methods
 
+        private string CleanUsername(string name)
+        {
+            string result = name;
+            string[] replace = new string[] { "-", "_", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "/", "=", "+", "~", "`",
+                "\"", "'", ";", ":", "<", ">", "/", "\\", "[", "]", "|" };
 
+            foreach (string r in replace)
+            {
+                result = result.Replace(r, "");
+            }
+
+            return result;
+        }
 
 
 

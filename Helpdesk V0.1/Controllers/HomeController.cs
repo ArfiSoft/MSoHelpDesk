@@ -138,12 +138,12 @@ namespace Helpdesk_V0._1.Controllers
             SDWS.GetIncidentRequest filter = new SDWS.GetIncidentRequest();
             filter.IncidentNumber = Id;
             filter.IncidentIdSpecified = false;
-            filter.IncludeAttachments = true;
-            filter.IncludeAttachmentsSpecified = true;
-            filter.IncludeDefinition = true;
-            filter.IncludeDefinitionSpecified = true;
-            filter.IncludeNotes = true;
-            filter.IncludeNotesSpecified = true;
+            filter.IncludeAttachments = false;
+            filter.IncludeAttachmentsSpecified = false;
+            filter.IncludeDefinition = false;
+            filter.IncludeDefinitionSpecified = false;
+            filter.IncludeNotes = false;
+            filter.IncludeNotesSpecified = false;
             req.IncidentRequest = filter;
             SDWS.GetIncidentResponse responce = sDesk.ProcessRequest(req);
 
@@ -184,5 +184,66 @@ namespace Helpdesk_V0._1.Controllers
             return View();
         }
 
+        public PartialViewResult _TicketSum(string id)
+        {
+            IncidentSummaryGridModel model = new IncidentSummaryGridModel();
+            SDWS.GetIncidentReq req = new SDWS.GetIncidentReq();
+            SDWS.GetIncidentRequest filter = new SDWS.GetIncidentRequest();
+            filter.IncidentNumber = id;
+            filter.IncidentIdSpecified = false;
+            filter.IncludeAttachments = false;
+            filter.IncludeAttachmentsSpecified = false;
+            filter.IncludeDefinition = false;
+            filter.IncludeDefinitionSpecified = false;
+            filter.IncludeNotes = false;
+            filter.IncludeNotesSpecified = false;
+            req.IncidentRequest = filter;
+            SDWS.GetIncidentResponse responce = sDesk.ProcessRequest(req);
+
+            model.IncidentNumber = responce.IncidentResponse.IncidentNumber;
+            model.Description = responce.IncidentResponse.Description;
+            model.Category = responce.IncidentResponse.Category;
+            model.IsUnread = responce.IncidentResponse.IsUnread;
+            model.OrganizationName = responce.IncidentResponse.OrganizationName;
+            model.Resolution = responce.IncidentResponse.Resolution;
+            model.Stage = responce.IncidentResponse.Stage;
+            model.Status = responce.IncidentResponse.Status;
+            model.Submitter = responce.IncidentResponse.Submitter;
+            model.Summary = responce.IncidentResponse.Summary;
+
+            return PartialView(model);
+        }
+
+        public PartialViewResult _TicketNotes(string id)
+        {
+            SDWS.Note[] Notes;
+            NotesGridModel result = new NotesGridModel();
+            List<NoteModel> list = new List<NoteModel>();
+            SDWS.GetIncidentReq req = new SDWS.GetIncidentReq();
+            SDWS.GetIncidentRequest filter = new SDWS.GetIncidentRequest();
+            filter.IncidentNumber = id;
+            filter.IncidentIdSpecified = false;
+            filter.IncludeAttachments = false;
+            filter.IncludeAttachmentsSpecified = false;
+            filter.IncludeDefinition = false;
+            filter.IncludeDefinitionSpecified = false;
+            filter.IncludeNotes = true;
+            filter.IncludeNotesSpecified = false;
+            req.IncidentRequest = filter;
+            SDWS.GetIncidentResponse responce = sDesk.ProcessRequest(req);
+
+            Notes = responce.IncidentResponse.Notes.Where(n=>n.Hidden==false && n.delete==false).OrderBy(n=>n.Timestamp).ToArray();
+            foreach (var note in Notes)
+            {
+                NoteModel n = new NoteModel();
+                n.Text = note.Text;
+                n.TimeStamp = note.Timestamp;
+                n.User = note.User;
+                list.Add(n);
+            }
+            result.Notes = list.ToArray();
+
+            return PartialView(result);
+        }
     }
 }

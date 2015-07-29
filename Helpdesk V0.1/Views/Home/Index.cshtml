@@ -1,58 +1,77 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-@section featured {
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-            </hgroup>
-        </div>
-    </section>
-}
+
 <div>
-    <table style="width: 650px; height: 100px;">
-        <tr>
-            <th style="width: 10%">Zoeken</th>
-            <th style="width: 60%">Status</th>
-            <th><div id="btnSearch" class="button">Zoeken</div></th>
-        </tr>
-        <tr>
-            <td style="vertical-align: top; ">
-                @Html.TextBox("SearchText")
-            </td>
-            <td rowspan="3" colspan="2">
-                <table>
-                    <tr>
-                        <td><div id='cbSolfed' class="checkbox">Opgelost</div></td>
-                        <td><div id='cbUserFeedback' class="checkbox">Wachten op gebruikers feedback</div></td>
-                        <td><div id='cbProssesing' class="checkbox">In behandeling</div></td>
-                    </tr>
-                    <tr>
-                        <td><div id='cbNoted' class="checkbox">Aangenomen</div></td>
-                        <td><div id='cbClosed' class="checkbox">Afgesloten</div></td>
-                        <td><div id='cbRepair' class="checkbox">Reparatie</div></td>
-                    </tr>
-                    <tr>
-                        <td><div id='cbRelease' class="checkbox">Wachten op Release</div></td>
-                        <td><div id='cbRefused' class="checkbox">Geweigerd</div></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><div id='btnSelectAll' class="button">Alles selecteren</div></td>
-                        <td><div id='btnUnselectAll' class="button">Alles deselecteren</div></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td></tr>
-    </table>
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                <h2>Overzicht Helpdesk</h2>
+            </div>
+        </div>
+        @Url.Action("_TicketSum", new { id = "MSO000111" });
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                <div class="row">
+                    <div class="col-md-2 col-xs-12">
+                        <label>Zoeken</label>
+                    </div>
+                    <div class="col-md-10 col-xs-12">
+                        @Html.TextBox("SearchText")
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <label>Status</label>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbSolfed' class="checkbox">Opgelost</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbNoted' class="checkbox">Aangenomen</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbRelease' class="checkbox">Wachten op<br />Release</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbUserFeedback' class="checkbox">Wachten op<br />gebruikers feedback</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbClosed' class="checkbox">Afgesloten</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbProssesing' class="checkbox">In behandeling</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbRepair' class="checkbox">Reparatie</div>
+                    </div>
+                    <div class="col-md-2 col-xs-4">
+                        <div id='cbRefused' class="checkbox">Geweigerd</div>
+                    </div>
+                    <div class="col-md-3 col-xs-6">
+                        <div id='btnSelectAll' class="btn-default">Alles selecteren</div>
+                    </div>
+                    <div class="col-md-4 col-xs-6">
+                        <div id='btnUnselectAll' class="btn-default">Alles deselecteren</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 col-xs-6">
+                        <div id="btnSearch" class="button">Zoeken</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
-<div id='jqxWidget'>
-    <!--float: left;-->
-    <div id="jqxgrid" style="font-size: 13px; font-family: Verdana;"> Bezig met laden...</div>
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1 col-xs-12">
+        <div id='jqxWidget'>
+            <!--float: left;-->
+            <div id="jqxgrid" style="font-size: 13px; font-family: Verdana;"> Bezig met laden...</div>
+        </div>
+    </div>
 </div>
 <div style="visibility: hidden">
     <input type="checkbox" name="valSolfed" id="valSolfed" checked="checked" />
@@ -69,6 +88,22 @@
 <div id="popupWindow">
     <div id="Title"></div>
     <div id="content"></div>
+</div>
+<div id="TicketModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="TicketBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="errors">
     @if (ViewBag.Error.Count > 0)
@@ -186,7 +221,7 @@
             $('#valSearchText').val('');
             $('#SearchText').val('');
             // initialize the popup window and buttons.
-            $('#popupWindow').jqxWindow({ showCollapseButton: true, height: 500, width: 800, autoOpen: false, modalOpacity: 0.01, resizable: false });
+            //$('#popupWindow').jqxWindow({ showCollapseButton: true, height: 500, width: 800, autoOpen: false, modalOpacity: 0.01, resizable: false });
             $(".button").jqxButton();
             $(".checkbox").jqxCheckBox();
             $('.checkbox').jqxCheckBox('check');
@@ -202,24 +237,20 @@
                 RefreshGrid();
                 $('#btnSearch').jqxButton('val', 'Zoeken')
             });
+            $('#TicketModal').on('hidden.bs.modal', function () {
+                $(".modal-title").html('');
+                $("#TicketBody").html('');
+            });
             RefreshGrid();
         });
         function openPopUp(incidentNumber) {
             var url = '@Url.Action("_Ticket")';
             $.post(url, $.param({ id: incidentNumber }, true)).always(
                 function (data) {
-                    $("#Title").empty();
-                    $("#Title").html = incidentNumber;
-                    $("#content").empty();
-                    $("#content").html(data);
-                    alert($("#resDay").val());
-                    $("#jqxTabs_Incident").jqxTabs()
-                    alert($("#resYear").val());
-                    $('#popupWindow').jqxWindow('open');
-                    alert($("#resMonth").val());
-                    $("#ActualResolutionDate").jqxDateTimeInput({ value: new Date($("resYear").val(), $("resMonth").val(), $("resDay").val()) });
+                    $(".modal-title").prepend(incidentNumber);
+                    $("#TicketBody").prepend(data);
+                    $("#TicketModal").modal({ show: true });
                 });
-
-        }
+        };
     </script>
 }

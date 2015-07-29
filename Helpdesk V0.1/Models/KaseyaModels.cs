@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
@@ -91,20 +92,6 @@ namespace Helpdesk_V0._1.Models
 
     }
 
-    public class IncidentSummaryGridModel
-    {
-        public string Category { get; set; }
-        public string IncidentNumber { get; set; }
-        public bool IsUnread { get; set; }
-        public string Submitter { get; set; }
-        public string OrganizationName { get; set; }
-        public string Stage { get; set; }
-        public string Summary { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public string Resolution { get; set; }
-    }
-
     public class rootElements
     {
         public string Method { get; set; }
@@ -136,8 +123,39 @@ namespace Helpdesk_V0._1.Models
         public string OrgId { get; set; }
         public string CustomerID { get; set; }
     }
-    
+
     #region GridModels
+    public class NoteModel
+    {
+        public DateTime TimeStamp { get; set; }
+        public string Text { get; set; }
+        public string User { get; set; }
+    }
+
+    public class NotesGridModel
+    {
+        public NoteModel[] Notes { get; set; }
+    }
+
+    public class IncidentSummaryGridModel
+    {
+        public string Category { get; set; }
+        [Display(Name = "Ticket")]
+        public string IncidentNumber { get; set; }
+        public bool IsUnread { get; set; }
+        [Display(Name = "Ingediend door")]
+        public string Submitter { get; set; }
+        [Display(Name = "Klant")]
+        public string OrganizationName { get; set; }
+        public string Stage { get; set; }
+        [Display(Name = "Samenvatting")]
+        public string Summary { get; set; }
+        [Display(Name = "Omschrijving")]
+        public string Description { get; set; }
+        public string Status { get; set; }
+        [Display(Name = "Oplossing")]
+        public string Resolution { get; set; }
+    }
 
     public class IncidentSummaryListModel
     {

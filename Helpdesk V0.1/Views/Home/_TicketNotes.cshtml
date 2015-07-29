@@ -1,0 +1,31 @@
+﻿@model Helpdesk_V0._1.Models.NotesGridModel
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-7 col-md-offset-2 col-xs-12">
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Notitie</th>
+                        <th>Door</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var note in Model.Notes)
+                    {
+                        <tr>
+                            <td>@note.TimeStamp.ToString("dd-MM-yyyy HH:mm")</td>
+                            <td>@note.Text</td>
+                            <td>@note.User</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
