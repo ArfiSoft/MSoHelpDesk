@@ -16,26 +16,19 @@
         @*controler moet nog gemaakt worden!!*@
         @using (Html.BeginForm("SaveIncidentSummary", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
         {
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                @*Omschrijving*@
-                @Html.LabelFor(m => m.Description, new { @class = "col-md-2 col-xs-12 control-label" })
-                <div class="col-md-10 col-xs-12">
-                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @readonly = "readonly" })
-                </div>
-            </div>
             <div class="form-group">
                 @*Contact*@
-                @Html.LabelFor(m => m.Submitter, new { @class = "col-md-2 col-xs-12 control-label" })
-                <div class="col-md-10 col-xs-12">
-                    @Html.TextBoxFor(m => m.Submitter, new { @class = "form-control", @readonly = "readonly" })
-                </div>
+                @Html.LabelFor(m => m.Submitter, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Submitter, new { @class = "form-control", @readonly = "readonly" })
             </div>
             <div class="form-group">
-                @Html.LabelFor(m => m.Stage, new { @class = "col-md-2 col-xs-12 control-label" })
-                <div class="col-md-10 col-xs-12">
-                    @Html.TextBoxFor(m => m.Stage, new { @class = "form-control", @readonly = "readonly" })
-                </div>
+                @*Omschrijving*@
+                @Html.LabelFor(m => m.Description, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Stage, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Stage, new { @class = "form-control", @readonly = "readonly" })
             </div>
             @*@if (Model.Category == "Opgelost" || Model.Stage == "Opgelost" || Model.Status == "Opgelost")
             {

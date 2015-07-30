@@ -24,28 +24,28 @@
     <div role="tabpanel" class="tab-pane fade in active" id="samenvattingtab">
         <div class="row">
             <div class="col-md-7 col-md-offset-2 col-xs-12">
-                <div id="ticketSum"></div>
+                <div id="ticketSum" class="panels"></div>
             </div>
         </div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="q&atab">
         <div class="row">
             <div class="col-md-7 col-md-offset-2 col-xs-12">
-                <div id="ticketQA"></div>
+                <div id="ticketQA" class="panels"></div>
             </div>
         </div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="notitiestab">
         <div class="row">
             <div class="col-md-7 col-md-offset-2 col-xs-12">
-                <div id="ticketNotes"></div>
+                <div id="ticketNotes" class="panels"></div>
             </div>
         </div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="bijlagestab">
         <div class="row">
             <div class="col-md-7 col-md-offset-2 col-xs-12">
-                <div id="ticketAttachments"></div>
+                <div id="ticketAttachments" class="panels"></div>
             </div>
         </div>
     </div>
@@ -54,28 +54,28 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('.table_Ticket').on('click', function () {
-            
+            $('.panels').html('');
             var info = $(this).data('info');
             var url = "";
             switch (info) {
-                case 'sum': alert(info);
-                    url = '/Home/_TicketSum/' + '@Model.IncidentNumber';//Url.Action("_TicketSum", "Home", new { id = Model.IncidentNumber });
-                    alert(url);
+                case 'sum':
+                    $('#ticketSum').load('/Home/_TicketSum/' + '@Model.IncidentNumber');
                     break;
                 case 'qa': //$('#ticketQA').load(Url.Action("", new { id = Model.IncidentNumber }));
                     break;
-                case 'notes': alert(info);
-                    url = '/Home/_TicketNotes/' + '@Model.IncidentNumber';//Url.Action("_TicketNotes", "Home", new { id = Model.IncidentNumber });
-                    alert(url);
+                case 'notes':
+                    $('#ticketNotes').load('/Home/_TicketNotes/' + '@Model.IncidentNumber');                    
                     break;
                 case 'atatchments': //$('#ticketAttachments').load(Url.Action("", new { id = Model.IncidentNumber }));
                     break;
                 default: break;
             };
 
-            alert(info + ': ' + url);
-            $('#ticketSum').load(url);
-        })
+            //alert(info + ': ' + url);
+        });
+        
+        $('#ticketSum').load('/Home/_TicketSum/' + '@Model.IncidentNumber');
+
     })
 
 </script>
