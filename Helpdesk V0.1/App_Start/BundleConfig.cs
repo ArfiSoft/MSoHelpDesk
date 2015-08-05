@@ -24,7 +24,8 @@ namespace Helpdesk_V0._1
                       "~/Scripts/respond.js",
                         "~/Scripts/jqwidgets/jqx-all.js",
                         "~/Scripts/jqwidgets/globalization/globalize.js",
-                        "~/Scripts/jquery.mousewheel.js"));
+                        "~/Scripts/jquery.mousewheel.js"
+                        ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
