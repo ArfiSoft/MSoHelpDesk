@@ -30,9 +30,9 @@ namespace Intake.Controllers
 
         // GET: /AutoComplete/
         [Authorize]
-        public ActionResult GetTicket(TicketFilter filter)
+        public ActionResult GetTicket(string text, string ServiceDesk, string Org)
         {
-            return Json(TicketNumbers.GetTicketLikeName(filter.text,filter.ServiceDesk,filter.OrgId), JsonRequestBehavior.AllowGet);
+            return Json(TicketNumbers.GetTicketLikeName(text,ServiceDesk,Org), JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -1,35 +1,33 @@
 ﻿//attached autocomplete widget to all the autocomplete controls
 $(document).ready(function () {
-    alert('JS started');
+    //alert('JS started');
     BindAutoComplete();
-    alert('Binded');
+    //alert('Binded');
 });
 function BindAutoComplete() {
-    alert('0');
+    //alert('0');
     $('[data-autocomplete]').each(function (index, element) {
         var sourceurl = $(element).attr('data-sourceurl');
         var autocompletetype = $(element).attr('data-autocompletetype');
-        //alert('1.'+index);
+        //alert('Compagny:'+index);
 
         $(element).autocomplete({
             source: function (request, response) {
                 var d = null;
-                if (autocompletetype== 'ticket') {
-                    var orgId = -2147483648;
-                    var org = $('#Compagny').val()
-                    var sdName = $('#ServiceDeskName_AutoComplete').val();
-                    //alert('sdName: '+sdName);
-                    if (sdName == "") {
-                        sdName = null
+                if (autocompletetype == 'ticket') {
+                    //alert('Ticket filter');
+                    //var orgId = -79228162514264337593543950335;
+                    //alert(orgId);
+                    var org = $('#Compagny_AutoComplete').val();
+                    var sdName_ac = $('#ServiceDesk_AutoComplete').val();
+                    if (sdName_ac == "") {
+                        //alert(sdName_ac);
+                        sdName_ac = null;
                     }
-                    //alert('OrgId: ' + org);
-                    if (org > orgId) {
-                        orgId = org;
-                    }
-                    d = { filter: { text: request.term, OrgId: orgId, ServiceDesk: sdName} }
+                    d = { text: request.term, Org: org, ServiceDesk: sdName_ac };
                 }
                 else {
-                    d = { searchHint: request.term }
+                    d = { searchHint: request.term };
                 }
                 $.ajax({
                     url: sourceurl,

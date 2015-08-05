@@ -213,7 +213,7 @@ namespace Intake.Models
         }
         public static List<ServiceDeskNameModel> GetServiceDeskLikeName(string namestring)
         {
-            var x = ListServiceDesks.Where<ServiceDeskNameModel>(d => d.ServiceDeskName.ToLower().Contains(namestring.ToLower().TrimStart()));
+            var x = ListServiceDesks.Where(d => d.ServiceDeskName.ToLower().Contains(namestring.ToLower().TrimStart()));
             return x.ToList();
 
         }
@@ -250,7 +250,7 @@ namespace Intake.Models
         }
         public static List<CompagnyNameModel> GetCompagnyLikeName(string namestring)
         {
-            var x = ListCompagys.Where<CompagnyNameModel>(d => d.CompagnyName.ToLower().Contains(namestring.ToLower().TrimStart()));
+            var x = ListCompagys.Where(d => d.CompagnyName.ToLower().Contains(namestring.ToLower().TrimStart()));
             return x.ToList();
         }
     }
@@ -268,44 +268,48 @@ namespace Intake.Models
             {
                 if (TicketList == null || UpdateTime <= DateTime.Now)
                 {
-                    SDWS.GetIncidentListRequest req = new SDWS.GetIncidentListRequest();
-                    SDWS.IncidentListFilter filter = new SDWS.IncidentListFilter();
-
-                    filter.IncidentCountSpecified = false;
-                    
-                    req.IncidentListRequest = filter;
-                    SDWS.GetIncidentListResponse items = sDesk.ProcessRequest(req);
-
-                    
+                    SDWS.GetServiceDesksRequest r = new SDWS.GetServiceDesksRequest();
+                    var response = sDesk.ProcessRequest(r);
                     List<TicketNumberModel> list = new List<TicketNumberModel>();
-                    foreach (var sd in items.IncidentList.Incident)
+                    foreach (var sd in response.ServiceDesks.OrderBy(s => s.ServiceDeskName))
                     {
-                        TicketNumberModel i = new TicketNumberModel();
-                        i.ID = Convert.ToInt64(sd.id);
-                        i.Ticket = sd.IncidentNumber;
-                        i.OrgId = Convert.ToInt64(sd.OrgID);
-                        i.ServiceDesk = sd.ServiceDeskName;
+                        SDWS.GetIncidentListRequest req = new SDWS.GetIncidentListRequest();
+                        SDWS.IncidentListFilter filter = new SDWS.IncidentListFilter();
 
-                        list.Add(i);
+                        filter.IncidentCountSpecified = false;
+                        filter.ServiceDeskName = sd.ServiceDeskName;
+                        req.IncidentListRequest = filter;
+                        SDWS.GetIncidentListResponse items = sDesk.ProcessRequest(req);
+
+                        foreach (var t in items.IncidentList.Incident)
+                        {
+                            TicketNumberModel i = new TicketNumberModel();
+                            i.ID = t.IncidentNumber;
+                            i.Ticket = string.Format("{0} - {1}",t.IncidentNumber,t.Summary);
+                            i.Org = t.OrganizationName;
+                            i.ServiceDesk = t.ServiceDeskName;
+
+                            list.Add(i);
+                        }
                     }
                     TicketList = list;
                 }
                 return TicketList;
             }
         }
-
-        public static List<TicketNumber> GetTicketLikeName(string namestring, string ServiceDesk = null, decimal OrgId = decimal.MinValue)
+        
+        public static List<TicketNumber> GetTicketLikeName(string namestring, string ServiceDesk = null, string Org = null)
         {
             var x = ListTickets;
-            if (ServiceDesk != null)
+            if (ServiceDesk != null && ServiceDesk != "")
             {
-                x = x.Where<TicketNumberModel>(t => t.ServiceDesk.ToLower() == ServiceDesk.ToLower()).ToList<TicketNumberModel>();
+                x = x.Where(t => t.ServiceDesk.ToLower() == ServiceDesk.ToLower()).ToList();
             }
-            if (OrgId != decimal.MinValue)
+            if (Org != null && Org != "")
             {
-                x = x.Where<TicketNumberModel>(t => t.OrgId == OrgId).ToList<TicketNumberModel>();
+                x = x.Where(t => t.Org == Org).ToList();
             }
-            x = x.Where<TicketNumberModel>(d => d.Ticket.ToLower().Contains(namestring.ToLower().TrimStart())).ToList<TicketNumberModel>();
+            x = x.Where(d => d.ID.ToLower().Contains(namestring.ToLower().TrimStart())).ToList();
             var l =  x.Select(t=> new { t.ID, t.Ticket } ).ToList();
             List<TicketNumber> list = new List<TicketNumber>();
             foreach (var item in l)
@@ -334,12 +338,12 @@ namespace Intake.Models
     public class TicketNumberModel: TicketNumber
     {
         public string ServiceDesk { get; set; }
-        public decimal OrgId { get; set; }
+        public string Org { get; set; }
     }
 
     public class TicketNumber
     {
-        public decimal ID { get; set; }
+        public string ID { get; set; }
         public string Ticket { get; set; }
     }
 

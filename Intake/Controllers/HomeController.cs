@@ -107,12 +107,17 @@ namespace Intake.Controllers
         {
             AddIncidentRequest req = new AddIncidentRequest();
             Incident ticket = new Incident();
-                       
+
             string sum;
             string desc;
 
             if (model !=null)
             {
+                //Default Ticket Config           
+                ticket.AssigneeType = Intake.SDWS.AssigneeType.POOL;
+                ticket.Assignee = "Eerste lijn";
+                ticket.AssigneeEmail = ""; //ToDo: somthing to find the correct name and email.
+
                 if (model.VerzoekType == 1)
                 {
                     //Terugbelverzoek
@@ -208,10 +213,11 @@ namespace Intake.Controllers
                         ticket.Organization = model.Compagny_AutoComplete;
                         ticket.OrganizationName = model.Compagny_AutoComplete;
                         ticket.OrganizationStaffName = model.ContactName;
-                        ticket.ServiceDeskName = model.ServiceDesk;
+                        ticket.ServiceDeskName = model.ServiceDesk_AutoComplete;
                         ticket.Submitter = model.ContactName;
                         ticket.SubmitterPhone = model.ContactPhone;
                         ticket.Summary = sum;
+                        
                         SDWS.AddIncidentRequest newTicket = new AddIncidentRequest();
                         newTicket.AddSDIncident = ticket;
                         SDWS.AddIncidentResponse responce3 = sDesk.ProcessRequest(newTicket);
@@ -243,7 +249,7 @@ namespace Intake.Controllers
                         SDWS.Note n = NewNote();
                         List<SDWS.Note> NotesList = new List<Note>();
 
-                        filter.IncidentNumber = model.Ticket;
+                        filter.IncidentNumber = model.Ticket_AutoComplete;
                         r.IncidentRequest = filter;
 
                         var responce = sDesk.ProcessRequest(r);
@@ -275,7 +281,7 @@ namespace Intake.Controllers
                     }
                     catch (Exception e)
                     {
-                        MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!", model.Ticket);
+                        MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!", model.Ticket_AutoComplete);
                         MessageSucces = false;
                         MessageDisplay = e.Message;
                     }
