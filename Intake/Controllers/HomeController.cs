@@ -11,10 +11,12 @@ namespace Intake.Controllers
 {
     public class HomeController : Controller
     {
-        static SettingsContext db = SettingsContext.Create();
-
-        private Helpers.KaseyaWSClient KasClient = new Helpers.KaseyaWSClient(db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
-        private Helpers.ServiceDeskWSClient sDesk = new Helpers.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+        private static SettingsContext db = SettingsContext.Create();
+        private static string MessageDisplay = string.Empty;
+        private static bool MessageSucces = true;
+        private static string MessageTitle = string.Empty;
+        private static Helpers.Kaseya.KaseyaWSClient KasClient = new Helpers.Kaseya.KaseyaWSClient(db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+        private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
 
 
         private void WriteCoockie(string Name, string Value)
@@ -61,12 +63,13 @@ namespace Intake.Controllers
                 WriteCoockie("ServiceDeskName", "");
             }
             model.VerzoekType = Convert.ToInt32(ReadCookie("LastRequestType"));
-            model.relatedTicket = string.Empty;
+            model.Ticket = string.Empty;
             model.Message = string.Empty;
-            model.Compagny = string.Empty;
+            model.Compagny_AutoComplete = string.Empty;
             model.ContactName = string.Empty;
             model.ContactPhone = string.Empty;
-            model.ServiceDeskName = ReadCookie("ServiceDeskName");
+            model.ServiceDesk_AutoComplete = ReadCookie("ServiceDeskName");
+            model.ServiceDesk = ReadCookie("ServiceDeskName");
 
             return model;
         }
@@ -104,10 +107,7 @@ namespace Intake.Controllers
         {
             AddIncidentRequest req = new AddIncidentRequest();
             Incident ticket = new Incident();
-            string MessageDisplay = string.Empty;
-            bool MessageSucces = true;
-            string MessageTitle = string.Empty;
-           
+                       
             string sum;
             string desc;
 
@@ -117,14 +117,14 @@ namespace Intake.Controllers
                 {
                     //Terugbelverzoek
                     try {
-                        desc = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny, model.ContactPhone, model.Message);
+                        desc = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny_AutoComplete, model.ContactPhone, model.Message);
                         sum = string.Format("Dhr/mevr {0} heeft gebeld met het verzoek om teruggebeld te worden.", model.ContactName);
                         ticket.Description = desc;
                         ticket.IsUnread = true;
-                        ticket.Organization = model.Compagny;
-                        ticket.OrganizationName = model.Compagny;
+                        ticket.Organization = model.Compagny_AutoComplete;
+                        ticket.OrganizationName = model.Compagny_AutoComplete;
                         ticket.OrganizationStaffName = model.ContactName;
-                        ticket.ServiceDeskName = model.ServiceDeskName;
+                        ticket.ServiceDeskName = model.ServiceDesk;
                         ticket.Submitter = model.ContactName;
                         ticket.SubmitterPhone = model.ContactPhone;
                         ticket.Summary = sum;
@@ -159,13 +159,13 @@ namespace Intake.Controllers
                         SDWS.Note n = NewNote();
                         List<SDWS.Note> NotesList = new List<Note>();
 
-                        filter.IncidentNumber = model.relatedTicket;
+                        filter.IncidentNumber = model.Ticket;
                         r.IncidentRequest = filter;
 
                         var responce = sDesk.ProcessRequest(r);
                         //NotesList = responce.IncidentResponse.Notes.ToList<SDWS.Note>();
 
-                        n.Text = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny, model.ContactPhone, model.Message);
+                        n.Text = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny_AutoComplete, model.ContactPhone, model.Message);
                         NotesList.Add(n);
 
                         ticket.id = responce.IncidentResponse.id;
@@ -200,15 +200,15 @@ namespace Intake.Controllers
                     //Nieuwe incident
                     try
                     {
-                        sum = string.Format("Ticket aangemaakt voor {0} van {1}", model.ContactName, model.Compagny);
+                        sum = string.Format("Ticket aangemaakt voor {0} van {1}", model.ContactName, model.Compagny_AutoComplete);
                         desc = string.Format("{0} heeft het volgende gemeld.<br />Omschrijving:<br />{1}<br /><br />{0} is bereikbaar op {2}"
                             , model.ContactName, model.Message, model.ContactPhone);
                         ticket.Description = desc;
                         ticket.IsUnread = true;
-                        ticket.Organization = model.Compagny;
-                        ticket.OrganizationName = model.Compagny;
+                        ticket.Organization = model.Compagny_AutoComplete;
+                        ticket.OrganizationName = model.Compagny_AutoComplete;
                         ticket.OrganizationStaffName = model.ContactName;
-                        ticket.ServiceDeskName = model.ServiceDeskName;
+                        ticket.ServiceDeskName = model.ServiceDesk;
                         ticket.Submitter = model.ContactName;
                         ticket.SubmitterPhone = model.ContactPhone;
                         ticket.Summary = sum;
@@ -243,13 +243,13 @@ namespace Intake.Controllers
                         SDWS.Note n = NewNote();
                         List<SDWS.Note> NotesList = new List<Note>();
 
-                        filter.IncidentNumber = model.relatedTicket;
+                        filter.IncidentNumber = model.Ticket;
                         r.IncidentRequest = filter;
 
                         var responce = sDesk.ProcessRequest(r);
                         //NotesList = responce.IncidentResponse.Notes.ToList<SDWS.Note>();
 
-                        n.Text = string.Format("Dhr/mevr {0} van {1} heeft een aanvulling gedaan op ticket {2}.<br />Bericht:<br />{3}<br /><br />{0} is bereikbaar op {4}.", model.ContactName, model.Compagny, responce.IncidentResponse.IncidentNumber, model.ContactPhone, model.Message);
+                        n.Text = string.Format("Dhr/mevr {0} van {1} heeft een aanvulling gedaan op ticket {2}.<br />Bericht:<br />{3}<br /><br />{0} is bereikbaar op {4}.", model.ContactName, model.Compagny_AutoComplete, responce.IncidentResponse.IncidentNumber, model.ContactPhone, model.Message);
                         NotesList.Add(n);
 
                         ticket.id = responce.IncidentResponse.id;
@@ -263,19 +263,19 @@ namespace Intake.Controllers
                         SDWS.UpdateIncidentResponse responce2 = sDesk.ProcessRequest(update);
                         if (responce2.ErrorMessage.Length > 0)
                         {
-                            MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!",model.relatedTicket);
+                            MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!",model.Ticket);
                             MessageSucces = false;
                             MessageDisplay = responce2.ErrorMessage;
                         }
                         else
                         {
-                            MessageTitle = string.Format("Ticket {0} aangevuld", model.relatedTicket);
+                            MessageTitle = string.Format("Ticket {0} aangevuld", model.Ticket);
                             MessageDisplay = string.Format("Voor {0} is er een terugbelverzoek aangemaakt onder ticket {1}.", model.ContactName, responce.IncidentResponse.IncidentNumber);
                         }
                     }
                     catch (Exception e)
                     {
-                        MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!", model.relatedTicket);
+                        MessageTitle = string.Format("Fout bij het het aanvullen van ticket {0}!!", model.Ticket);
                         MessageSucces = false;
                         MessageDisplay = e.Message;
                     }
@@ -283,7 +283,7 @@ namespace Intake.Controllers
             }
 
             
-            return RedirectToAction("Index",new { Title = MessageTitle, Display = MessageDisplay, Succes = MessageSucces });
+            return RedirectToAction("Index");
         }
 
         private SDWS.Note NewNote()
@@ -302,20 +302,18 @@ namespace Intake.Controllers
             return note;
         }
 
-        public ActionResult Index(string Title, string Display, bool Succes)
-        {
-            ViewBag.MessageTitle = Title;
-            ViewBag.MessageSucces = Succes;
-            ViewBag.MessageDisplay = Display;
-
-            var model = initModel();
-
-            return View(model);
-        }
-
         public ActionResult Index()
         {
             var model = initModel();
+            if (MessageTitle.Length>0)
+            {
+                ViewBag.MessageTitle = MessageTitle;
+                ViewBag.MessageSucces = MessageSucces;
+                ViewBag.MessageDisplay = MessageDisplay;
+            }
+            MessageTitle = string.Empty;
+            MessageSucces = true;
+            MessageDisplay = string.Empty;
 
             return View(model);
         }

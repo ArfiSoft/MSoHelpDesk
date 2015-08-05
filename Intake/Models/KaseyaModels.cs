@@ -147,70 +147,6 @@ namespace Intake.Models
         public string CustomerID { get; set; }
     }
 
-    #region GridModels
-
-    public class IntakeFormModel
-    {
-        [Required]
-        [Display(Name = "Servicedesk")]
-        public string ServiceDeskName { get; set; }
-        [Required]
-        [Display(Name = "Klant")]
-        public string Compagny { get; set; }
-        [Required]
-        [MinLength(length: 2, ErrorMessage = "Klantnaam opgeven")]
-        [Display(Name = "Contactpersoon")]
-        public string ContactName { get; set; }
-        [Required]
-        [Display(Name = "Telefoonnummer")]
-        public string ContactPhone { get; set; }
-        [Required]
-        [Display(Name = "Verzoek Tot")]
-        public int VerzoekType { get; set; }
-        [Display(Name = "Ticket nummer")]
-        public string relatedTicket { get; set; }
-        [Display(Name = "Notitie")]
-        public string Message { get; set; }
-    }
-    public class NoteModel
-    {
-        public DateTime TimeStamp { get; set; }
-        public string Text { get; set; }
-        public string User { get; set; }
-    }
-
-    public class NotesGridModel
-    {
-        public NoteModel[] Notes { get; set; }
-    }
-
-    public class IncidentSummaryGridModel
-    {
-        public string Category { get; set; }
-        [Display(Name = "Ticket")]
-        public string IncidentNumber { get; set; }
-        public bool IsUnread { get; set; }
-        [Display(Name = "Ingediend door")]
-        public string Submitter { get; set; }
-        [Display(Name = "Klant")]
-        public string OrganizationName { get; set; }
-        public string Stage { get; set; }
-        [Display(Name = "Samenvatting")]
-        public string Summary { get; set; }
-        [Display(Name = "Omschrijving")]
-        public string Description { get; set; }
-        public string Status { get; set; }
-        [Display(Name = "Oplossing")]
-        public string Resolution { get; set; }
-    }
-
-    public class IncidentSummaryListModel
-    {
-        SDWS.IncidentList items = new SDWS.IncidentList();
-        public IncedentSummaryModel[] Incident { get; set; }
-        public string NextStartingIncident { get; set; }
-    }
-
     public class IncedentSummaryModel
     {
         public string ServiceDeskName { get; set; }
@@ -244,6 +180,243 @@ namespace Intake.Models
         public string SubmitterType { get; set; }
         public bool IsUnread { get; set; }
     }
+
+    #region ViewGridModels
+
+    public class ServiceDeskNames
+    {
+        private static List<ServiceDeskNameModel> ServiceDeskList;
+        private static DateTime UpdateTime = DateTime.Now.AddMinutes(15);
+        private static SettingsContext db = SettingsContext.Create();
+        private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+
+        public static List<ServiceDeskNameModel> ListServiceDesks
+        {
+            get
+            {
+                if (ServiceDeskList == null || UpdateTime <= DateTime.Now)
+                {
+                    SDWS.GetServiceDesksRequest r = new SDWS.GetServiceDesksRequest();
+                    var response = sDesk.ProcessRequest(r);
+                    List<ServiceDeskNameModel> list = new List<ServiceDeskNameModel>();
+                    foreach (var sd in response.ServiceDesks.OrderBy(s => s.ServiceDeskName))
+                    {
+                        ServiceDeskNameModel i = new ServiceDeskNameModel();
+                        i.ID = sd.ServiceDeskID;
+                        i.ServiceDeskName = sd.ServiceDeskName;
+                        list.Add(i);
+                    }
+                    ServiceDeskList = list;
+                }
+                return ServiceDeskList;
+            }
+        }
+        public static List<ServiceDeskNameModel> GetServiceDeskLikeName(string namestring)
+        {
+            var x = ListServiceDesks.Where<ServiceDeskNameModel>(d => d.ServiceDeskName.ToLower().Contains(namestring.ToLower().TrimStart()));
+            return x.ToList();
+
+        }
+    }
+
+    public class CompagnyNames
+    {
+        private static List<CompagnyNameModel> CompagnyList;
+        private static DateTime UpdateTime = DateTime.Now.AddMinutes(15);
+        private static SettingsContext db = SettingsContext.Create();
+        private static Helpers.Kaseya.KaseyaWSClient KasClient = new Helpers.Kaseya.KaseyaWSClient(db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+
+        public static List<CompagnyNameModel> ListCompagys
+        {
+            get
+            {
+                if (CompagnyList == null || UpdateTime <= DateTime.Now)
+                {
+                    KWS.GetOrgsRequest r = new KWS.GetOrgsRequest();
+                    var response = KasClient.ProcessRequest(r);
+                    List<CompagnyNameModel> list = new List<CompagnyNameModel>();
+                    foreach (var sd in response.Orgs.OrderBy(s => s.OrgName))
+                    {
+                        CompagnyNameModel i = new CompagnyNameModel();
+                        i.ID = sd.OrgId;
+                        i.CompagnyName = sd.OrgName;
+                        
+                        list.Add(i);
+                    }
+                    CompagnyList = list;
+                }
+                return CompagnyList;
+            }
+        }
+        public static List<CompagnyNameModel> GetCompagnyLikeName(string namestring)
+        {
+            var x = ListCompagys.Where<CompagnyNameModel>(d => d.CompagnyName.ToLower().Contains(namestring.ToLower().TrimStart()));
+            return x.ToList();
+        }
+    }
+
+    public class TicketNumbers
+    {
+        private static List<TicketNumberModel> TicketList;
+        private static DateTime UpdateTime = DateTime.Now.AddMinutes(15);
+        private static SettingsContext db = SettingsContext.Create();
+        private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+
+        public static List<TicketNumberModel> ListTickets
+        {
+            get
+            {
+                if (TicketList == null || UpdateTime <= DateTime.Now)
+                {
+                    SDWS.GetIncidentListRequest req = new SDWS.GetIncidentListRequest();
+                    SDWS.IncidentListFilter filter = new SDWS.IncidentListFilter();
+
+                    filter.IncidentCountSpecified = false;
+                    
+                    req.IncidentListRequest = filter;
+                    SDWS.GetIncidentListResponse items = sDesk.ProcessRequest(req);
+
+                    
+                    List<TicketNumberModel> list = new List<TicketNumberModel>();
+                    foreach (var sd in items.IncidentList.Incident)
+                    {
+                        TicketNumberModel i = new TicketNumberModel();
+                        i.ID = Convert.ToInt64(sd.id);
+                        i.Ticket = sd.IncidentNumber;
+                        i.OrgId = Convert.ToInt64(sd.OrgID);
+                        i.ServiceDesk = sd.ServiceDeskName;
+
+                        list.Add(i);
+                    }
+                    TicketList = list;
+                }
+                return TicketList;
+            }
+        }
+
+        public static List<TicketNumber> GetTicketLikeName(string namestring, string ServiceDesk = null, decimal OrgId = decimal.MinValue)
+        {
+            var x = ListTickets;
+            if (ServiceDesk != null)
+            {
+                x = x.Where<TicketNumberModel>(t => t.ServiceDesk.ToLower() == ServiceDesk.ToLower()).ToList<TicketNumberModel>();
+            }
+            if (OrgId != decimal.MinValue)
+            {
+                x = x.Where<TicketNumberModel>(t => t.OrgId == OrgId).ToList<TicketNumberModel>();
+            }
+            x = x.Where<TicketNumberModel>(d => d.Ticket.ToLower().Contains(namestring.ToLower().TrimStart())).ToList<TicketNumberModel>();
+            var l =  x.Select(t=> new { t.ID, t.Ticket } ).ToList();
+            List<TicketNumber> list = new List<TicketNumber>();
+            foreach (var item in l)
+            {
+                TicketNumber t = new TicketNumber();
+                t.ID = item.ID;
+                t.Ticket = item.Ticket;
+                list.Add(t);
+            }
+            return list;
+        }
+    }
+
+    public class ServiceDeskNameModel
+    {
+        public decimal ID { get; set; }
+        public string ServiceDeskName { get; set; }
+    }
+
+    public class CompagnyNameModel
+    {
+        public string ID { get; set; }
+        public string CompagnyName { get; set; }
+    }
+
+    public class TicketNumberModel: TicketNumber
+    {
+        public string ServiceDesk { get; set; }
+        public decimal OrgId { get; set; }
+    }
+
+    public class TicketNumber
+    {
+        public decimal ID { get; set; }
+        public string Ticket { get; set; }
+    }
+
+    public class IncidentSummaryGridModel
+    {
+        public string Category { get; set; }
+        [Display(Name = "Ticket")]
+        public string IncidentNumber { get; set; }
+        public bool IsUnread { get; set; }
+        [Display(Name = "Ingediend door")]
+        public string Submitter { get; set; }
+        [Display(Name = "Klant")]
+        public string OrganizationName { get; set; }
+        public string Stage { get; set; }
+        [Display(Name = "Samenvatting")]
+        public string Summary { get; set; }
+        [Display(Name = "Omschrijving")]
+        public string Description { get; set; }
+        public string Status { get; set; }
+        [Display(Name = "Oplossing")]
+        public string Resolution { get; set; }
+    }
+
+    public class IntakeFormModel
+    {
+        [Required]
+        [Display(Name = "Servicedesk")]
+        public string ServiceDesk { get; set; }
+        public string ServiceDesk_AutoComplete { get; set; }
+        [Required]
+        [MinLength(length: 2, ErrorMessage = "Klant opgeven")]
+        [Display(Name = "Klant")]
+        public string Compagny { get; set; }
+        public string Compagny_AutoComplete { get; set; }
+        [Required]
+        [MinLength(length: 2, ErrorMessage = "Contact opgeven opgeven")]
+        [Display(Name = "Contactpersoon")]
+        public string ContactName { get; set; }
+        [Required]
+        [Display(Name = "Telefoonnummer")]
+        public string ContactPhone { get; set; }
+        [Required]
+        [Display(Name = "Verzoek Tot")]
+        public int VerzoekType { get; set; }
+        [Display(Name = "Ticket nummer")]
+        public string Ticket { get; set; }
+        public string Ticket_AutoComplete { get; set; }
+        [Display(Name = "Notitie")]
+        public string Message { get; set; }
+    }
+
+    public class TicketFilter
+    {
+        public string text { get; set; }
+        public int OrgId { get; set; }
+        public string ServiceDesk { get; set; }
+    }
+    //public class NoteModel
+    //{
+    //    public DateTime TimeStamp { get; set; }
+    //    public string Text { get; set; }
+    //    public string User { get; set; }
+    //}
+
+    //public class NotesGridModel
+    //{
+    //    public NoteModel[] Notes { get; set; }
+    //}
+
+    //public class IncidentSummaryListModel
+    //{
+    //    SDWS.IncidentList items = new SDWS.IncidentList();
+    //    public IncedentSummaryModel[] Incident { get; set; }
+    //    public string NextStartingIncident { get; set; }
+    //}
+
+    //
 
     #endregion
 }

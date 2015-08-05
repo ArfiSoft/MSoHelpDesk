@@ -1,4 +1,5 @@
-﻿@model Intake.Models.IntakeFormModel
+﻿@using Intake.Helpers.Autocomplete
+@model Intake.Models.IntakeFormModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -19,10 +20,11 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="ServiceDeskName">Servicedesk</label>
             <div class="col-md-5">
-                <select id="ServiceDeskName" name="ServiceDeskName" class="form-control">
+                @Html.AutocompleteFor(m=>m.ServiceDesk, @Model.ServiceDesk, AutoCompleteType.ServiceDeskName,true)
+                @*<select id="ServiceDeskName" name="ServiceDeskName" class="form-control">
                     <option value="1">Infra</option>
                     <option value="2">MSo</option>
-                </select>
+                </select>*@
             </div>
         </div>
 
@@ -31,10 +33,10 @@
             <label class="col-md-4 control-label" for="VerzoekType_Type">Type verzoek</label>
             <div class="col-md-5">
                 <select id="VerzoekType_Type" name="VerzoekType_Type" class="form-control">
-                    <option value="1">"Terugbelverzoek"</option>
-                    <option value="2">"Terugbelverzoek inzake bestaande ticket"</option>
-                    <option value="3">"Nieuwe incident"</option>
-                    <option value="4">"Update van bestaande ticket"</option>
+                    <option value="1">Terugbelverzoek</option>
+                    <option value="2">Terugbelverzoek inzake bestaande ticket</option>
+                    <option value="3">Nieuwe incident</option>
+                    <option value="4">Update van bestaande ticket</option>
                 </select>
             </div>
         </div>
@@ -43,8 +45,8 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="Compagny">Bedrijf</label>
             <div class="col-md-5">
-                <input id="Compagny" name="Compagny" type="text" placeholder="Naam van het bedrijf" class="form-control input-md" required="">
-
+                @Html.AutocompleteFor(m => m.Compagny, @Model.Compagny, AutoCompleteType.Compagny, true)
+                @*<input id="Compagny" name="Compagny" type="text" placeholder="Naam van het bedrijf" class="form-control input-md" required="">*@
             </div>
         </div>
 
@@ -53,7 +55,6 @@
             <label class="col-md-4 control-label" for="ContactName">Contact</label>
             <div class="col-md-5">
                 <input id="ContactName" name="ContactName" type="text" placeholder="Wie heeft er gebeld?" class="form-control input-md" required="">
-
             </div>
         </div>
 
@@ -70,7 +71,8 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="relatedTicket">Ticket</label>
             <div class="col-md-5">
-                <input id="relatedTicket" name="relatedTicket" type="search" placeholder="Ticket nummer" class="form-control input-md">
+                @Html.AutocompleteFor(m => m.Ticket, @Model.Ticket, AutoCompleteType.Ticket, false)
+                @*<input id="relatedTicket" name="relatedTicket" type="search" placeholder="Ticket nummer" class="form-control input-md">*@
 
             </div>
         </div>
@@ -79,7 +81,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="Message">Bericht</label>
             <div class="col-md-4">
-                <textarea class="form-control" id="Message" name="Message"></textarea>
+                <textarea class="form-control" id="Message" name="Message" required></textarea>
             </div>
         </div>
 
@@ -93,4 +95,22 @@
         </div>
 
     </fieldset>
+    if (ViewBag.MessageTitle !=null && ViewBag.MessageTitle != string.Empty)
+    {
+        if (ViewBag.MessageSucces)
+        {
+            <div class="alert alert-success fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger fade in">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
+            </div>
+        }
+    }
+    
 }

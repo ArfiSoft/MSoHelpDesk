@@ -12,7 +12,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Intake.Helpers
+namespace Intake.Helpers.Kaseya
 {
     public static class UserTools
     {
