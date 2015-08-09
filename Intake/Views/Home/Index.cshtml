@@ -17,7 +17,7 @@
         <legend>Ticket</legend>
 
         <!-- Select Basic -->
-        <div class="form-group">
+        <div id="fg1" class="form-group">
             <label class="col-md-4 control-label" for="ServiceDeskName">Servicedesk</label>
             <div class="col-md-5">
                 @Html.AutocompleteFor(m=>m.ServiceDesk, @Model.ServiceDesk, AutoCompleteType.ServiceDeskName,true)
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Select Basic -->
-        <div class="form-group">
+        <div id="fg2" class="form-group">
             <label class="col-md-4 control-label" for="VerzoekType">Type verzoek</label>
             <div class="col-md-5">
                 <select id="VerzoekType" name="VerzoekType" class="form-control" required>
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Text input-->
-        <div class="form-group">
+        <div id="fg3" class="form-group hidden">
             <label class="col-md-4 control-label" for="Compagny">Bedrijf</label>
             <div class="col-md-5">
                 @Html.AutocompleteFor(m => m.Compagny, @Model.Compagny, AutoCompleteType.Compagny, true)
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Text input-->
-        <div class="form-group">
+        <div id="fg4" class="form-group hidden">
             <label class="col-md-4 control-label" for="ContactName">Contact</label>
             <div class="col-md-5">
                 <input id="ContactName" name="ContactName" type="text" placeholder="Wie heeft er gebeld?" class="form-control input-md" required="">
@@ -59,26 +59,26 @@
         </div>
 
         <!-- Text input-->
-        <div class="form-group">
+        <div id="fg5" class="form-group hidden">
             <label class="col-md-4 control-label" for="ContactPhone">Telefoonnummer</label>
             <div class="col-md-5">
-                <input id="ContactPhone" name="ContactPhone" type="text" placeholder="Bereikbaar op welk nummer?" class="form-control input-md" required="">
+                <input id="ContactPhone" name="ContactPhone" type="text" placeholder="Bereikbaar op welk nummer?" class="form-control input-md" required>
 
             </div>
         </div>
 
         <!-- Search input-->
-        <div class="form-group">
+        <div id="fg6" class="form-group hidden">
             <label class="col-md-4 control-label" for="relatedTicket">Ticket</label>
             <div class="col-md-5">
-                @Html.AutocompleteFor(m => m.Ticket, @Model.Ticket, AutoCompleteType.Ticket, false)
+                @Html.AutocompleteFor(m => m.Ticket, @Model.Ticket, AutoCompleteType.Ticket, isRequired: false, onselectfunction: "ticketChange")
                 @*<input id="relatedTicket" name="relatedTicket" type="search" placeholder="Ticket nummer" class="form-control input-md">*@
 
             </div>
         </div>
 
         <!-- Textarea -->
-        <div class="form-group">
+        <div id="fg7" class="form-group hidden">
             <label class="col-md-4 control-label" for="Message">Bericht</label>
             <div class="col-md-4">
                 <textarea class="form-control" id="Message" name="Message" required></textarea>
@@ -89,7 +89,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="Submit">Indienen?</label>
             <div class="col-md-8">
-                <button id="Submit" name="Submit" class="btn btn-success" value="Save">Opslaan</button>
+                <button id="Submit" name="Submit" class="btn btn-success disabled" value="Save">Opslaan</button>
                 <button id="Cancel" name="Cancel" class="btn btn-danger" value="Cancel">Wissen</button>
             </div>
         </div>

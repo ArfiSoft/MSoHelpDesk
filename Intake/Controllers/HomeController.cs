@@ -74,6 +74,7 @@ namespace Intake.Controllers
             return model;
         }
 
+
         private KWS.Org FindCustomer(string Name)
         {
             KWS.GetOrgsRequest OrgReq = new KWS.GetOrgsRequest();
@@ -110,12 +111,22 @@ namespace Intake.Controllers
 
             string sum;
             string desc;
-
+            
             if (model !=null)
             {
+                if (Request.Params[11] == "Cancel")
+                {
+                    //clear screen
+                    return RedirectToAction("Index");
+                }
+
+                //Write last selected in cookie
+                WriteCoockie("ServiceDeskName", model.ServiceDesk_AutoComplete);
+                WriteCoockie("LastRequestType", model.VerzoekType.ToString());
+
                 //Default Ticket Config           
                 ticket.AssigneeType = Intake.SDWS.AssigneeType.POOL;
-                ticket.Assignee = "Eerste lijn";
+                ticket.Assignee = "Eerstelijn";
                 ticket.AssigneeEmail = ""; //ToDo: somthing to find the correct name and email.
 
                 if (model.VerzoekType == 1)
@@ -249,7 +260,7 @@ namespace Intake.Controllers
                         SDWS.Note n = NewNote();
                         List<SDWS.Note> NotesList = new List<Note>();
 
-                        filter.IncidentNumber = model.Ticket_AutoComplete;
+                        filter.IncidentNumber = model.Ticket;
                         r.IncidentRequest = filter;
 
                         var responce = sDesk.ProcessRequest(r);
@@ -292,7 +303,7 @@ namespace Intake.Controllers
             return RedirectToAction("Index");
         }
 
-        private SDWS.Note NewNote()
+        private Note NewNote()
         {
             SDWS.Note note = new SDWS.Note();
 

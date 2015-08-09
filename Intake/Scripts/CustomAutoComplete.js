@@ -3,7 +3,10 @@ $(document).ready(function () {
     //alert('JS started');
     BindAutoComplete();
     //alert('Binded');
+    InitControls();
 });
+
+
 function BindAutoComplete() {
     //alert('0');
     $('[data-autocomplete]').each(function (index, element) {
