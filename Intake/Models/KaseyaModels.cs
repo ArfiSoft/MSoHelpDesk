@@ -78,8 +78,10 @@ namespace Intake.Models
         public string server { get; set; }
         public string userName { get; set; }
         public string password { get; set; }
-        public int servicedeskId { get; set; }
-        public string servicedeskName { get; set; }
+        //public int servicedeskId { get; set; }
+        //public string servicedeskName { get; set; }
+        public string DefaultScope { get; set; }
+        public bool connected { get; set; }
     }
 
     public class ServiceDeskCBList
@@ -183,6 +185,42 @@ namespace Intake.Models
 
     #region ViewGridModels
 
+    public class ScopesIds
+    {
+        private static List<ScopeIdModdel> ScopeIDList;
+        private static DateTime UpdateTime = DateTime.Now.AddMinutes(15);
+        private static SettingsContext db = SettingsContext.Create();
+        private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
+
+        public static List<ScopeIdModdel> ListScopes
+        {
+            get
+            {
+                if (ScopeIDList == null || UpdateTime <= DateTime.Now)
+                {
+                    KWS.GetScopesRequest req = new KWS.GetScopesRequest();
+                    var resp = sDesk.kWS.ProcessRequest(req);
+                    List<ScopeIdModdel> list = new List<ScopeIdModdel>();
+
+                    foreach (var sc in resp.Scopes)
+                    {
+                        ScopeIdModdel newScope = new ScopeIdModdel();
+                        newScope.ID = list.Count;
+                        newScope.ScopeID = sc.ScopeID;
+                    }
+                    ScopeIDList = list;
+                }
+                return ScopeIDList;
+            }
+        }
+        public static List<ScopeIdModdel> GetScopesLike(string namestring)
+        {
+            var x = ScopeIDList.Where(d => d.ScopeID.ToLower().Contains(namestring.ToLower().Trim()));
+            return x.ToList();
+
+        }
+    }
+    
     public class ServiceDeskNames
     {
         private static List<ServiceDeskNameModel> ServiceDeskList;
@@ -196,15 +234,17 @@ namespace Intake.Models
             {
                 if (ServiceDeskList == null || UpdateTime <= DateTime.Now)
                 {
-                    SDWS.GetServiceDesksRequest r = new SDWS.GetServiceDesksRequest();
-                    var response = sDesk.ProcessRequest(r);
+                    SDWS.GetServiceDesksRequest sdReq = new SDWS.GetServiceDesksRequest();
+                    var sdResponse = sDesk.ProcessRequest(sdReq);
+                    
                     List<ServiceDeskNameModel> list = new List<ServiceDeskNameModel>();
-                    foreach (var sd in response.ServiceDesks.OrderBy(s => s.ServiceDeskName))
+                    
+                    foreach (var sd in sdResponse.ServiceDesks.OrderBy(s => s.ServiceDeskName))
                     {
                         ServiceDeskNameModel i = new ServiceDeskNameModel();
                         i.ID = sd.ServiceDeskID;
                         i.ServiceDeskName = sd.ServiceDeskName;
-                        list.Add(i);
+                        if (!list.Contains(i)) { list.Add(i); }
                     }
                     ServiceDeskList = list;
                 }
@@ -232,18 +272,43 @@ namespace Intake.Models
             {
                 if (CompagnyList == null || UpdateTime <= DateTime.Now)
                 {
-                    KWS.GetOrgsRequest r = new KWS.GetOrgsRequest();
-                    var response = KasClient.ProcessRequest(r);
+                    KWS.GetScopesRequest scReq = new KWS.GetScopesRequest();
+                    var scResponse = KasClient.ProcessRequest(scReq);
+                    //KWS.AssignScopeRequest asReq = new KWS.AssignScopeRequest();
+                    //KWS.AddUserToScopeRequest rcs = new KWS.AddUserToScopeRequest();
+                    //KWS.AddUserToScopeResponse asResponce = null;
+                     
+                    //rcs.UserName = db.Settings.FirstOrDefault(s => s.Key == "KaseyaUser").Value;
+
                     List<CompagnyNameModel> list = new List<CompagnyNameModel>();
-                    foreach (var sd in response.Orgs.OrderBy(s => s.OrgName))
-                    {
-                        CompagnyNameModel i = new CompagnyNameModel();
-                        i.ID = sd.OrgId;
-                        i.CompagnyName = sd.OrgName;
+
+                    //foreach (var scope in scResponse.Scopes)
+                    //{
+                        //rcs.ScopeID = scope.ScopeID;
+                        //asResponce = KasClient.ProcessRequest(rcs);
+                        //if (asResponce.ErrorMessage.Length > 0)
+                        //{
+                        //    throw new Exception(asResponce.ErrorMessage);
+                        //}
+                        KWS.GetOrgsRequest r = new KWS.GetOrgsRequest();
+                        var response = KasClient.ProcessRequest(r);
                         
-                        list.Add(i);
-                    }
+                        foreach (var sd in response.Orgs.OrderBy(s => s.OrgName))
+                        {
+                            CompagnyNameModel i = new CompagnyNameModel();
+                            i.ID = sd.OrgRef;
+                            i.CompagnyName = sd.OrgName;
+
+                            if (!list.Contains(i)) { list.Add(i); }
+                        }
+                    //}
                     CompagnyList = list;
+                    //rcs.ScopeID = db.Settings.FirstOrDefault(s => s.Key == "DefaultScope").Value;
+                    //asResponce = KasClient.ProcessRequest(rcs);
+                    //if (asResponce.ErrorMessage.Length > 0)
+                    //{
+                    //    throw new Exception(asResponce.ErrorMessage);
+                    //}
                 }
                 return CompagnyList;
             }
@@ -258,7 +323,7 @@ namespace Intake.Models
     public class TicketNumbers
     {
         private static List<TicketNumberModel> TicketList;
-        private static DateTime UpdateTime = DateTime.Now.AddMinutes(15);
+        private static DateTime UpdateTime = DateTime.Now.AddMinutes(2); //ToDo: iets grotere interval
         private static SettingsContext db = SettingsContext.Create();
         private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
 
@@ -339,6 +404,12 @@ namespace Intake.Models
     {
         public string ServiceDesk { get; set; }
         public string Org { get; set; }
+    }
+
+    public class ScopeIdModdel
+    {
+        public int ID { get; set; }
+        public string ScopeID { get; set; }
     }
 
     public class TicketNumber

@@ -1,0 +1,117 @@
+﻿@using Intake.Helpers.Autocomplete
+@model Intake.Models.AdminSettings
+@{
+    ViewBag.Title = "Admin";
+}
+
+
+<div class="jumbotron">
+    <h2>Applicatie Instellingen</h2>
+</div>
+<div class="row">
+    <div class="col-md-7 col-md-offset-2 col-xs-12">
+        @using (Html.BeginForm("SaveSettings", "Admin", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(m => m.server, new { @class = "col-md-2 col-sx-12 control-label" })
+                <div class="col-md-10 col-sx-12">
+                    @Html.TextBoxFor(m => m.server, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.userName, new { @class = "col-md-2 col-sx-12 control-label" })
+                <div class="col-md-10 col-sx-12">
+                    @Html.TextBoxFor(m => m.userName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.password, new { @class = "col-md-2 col-sx-12 control-label" })
+                <div class="col-md-10 col-sx-12">
+                    @Html.TextBoxFor(m => m.password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.connected, new { @class = "col-md-2 col-sx-12 control-label" })
+                <div class="col-md-10 col-sx-12">
+                    @if (Model.connected)
+                    {
+                        <span class="glyphicon glyphicon-ok-circle col-lg-1 col-xs-1 success"></span>
+                    }
+                    else
+                    {
+                        <span class="glyphicon glyphicon-remove-circle col-lg-1 col-xs-1 danger" ></span>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DefaultScope, new { @class = "col-md-2 col-sx-12 control-label" })
+                <div class="col-md-10 col-sx-12">
+                    @Html.AutocompleteFor(m => m.DefaultScope, @Model.DefaultScope, AutoCompleteType.Scopes)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" class="btn btn-default" value="Save" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@section scripts {
+    @*<script type="text/javascript">
+    $(document).ready(function () {
+        var url = '@Url.Action("GetServicedesks")';
+        var cbIndex = 0;
+
+        // prepare the data
+        var source =
+        {
+            datatype: "json",
+            datafields: [
+                { name: 'ServiceDeskID', type: 'int' },
+                { name: 'ServiceDeskName', type: 'string' }
+            ],
+            url: url,
+            async: false
+        };
+        var dataAdapter = new $.jqx.dataAdapter(source, {
+            downloadComplete: function (data, status, xhr) { },
+            loadComplete: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i]['ServiceDeskName'] == '@Model.servicedeskName') {
+                        cbIndex = i;
+                        //alert('Zoeken: ' + i);
+                    }
+                    //alert(data[i]['ServiceDeskName']);
+                }
+                $("#servicedeskname").jqxDropDownList({ selectedIndex: cbIndex });
+            },
+            loadError: function (xhr, status, error) { alert(error); }
+        });
+        // Create a jqxDropDownList
+        $("#servicedeskname").jqxDropDownList({
+            source: dataAdapter, displayMember: "ServiceDeskName", valueMember: "ServiceDeskID", width: 150, height: 25
+        });
+        // subscribe to the select event.
+        $("#servicedeskname").on('select', function (event) {
+            if (event.args) {
+                var item = event.args.item;
+                if (item) {
+                    alert("Value: " + item.value);
+                    alert("Label: " + item.label);
+                    $('#servicedeskId').val(item.value);
+                    $('#servicedeskName').val(item.label);
+                }
+            }
+        });
+    });
+    </script>*@
+
+
+
+}
+

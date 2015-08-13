@@ -33,7 +33,7 @@ namespace Intake.Helpers.Kaseya
         #region Private Data Members
         static SettingsContext db = SettingsContext.Create();
         KWS.KaseyaWS clientWS;
-        decimal _id;
+        static decimal _id;
         #endregion
 
         #region Public Data Members
@@ -44,15 +44,20 @@ namespace Intake.Helpers.Kaseya
             {
                 if (_id == 0)
                 {
-                    AuthenticationResponse resp = null;
+                    //System.Threading.Thread.Sleep(500);
+                    if (db.Database.Connection.State == System.Data.ConnectionState.Closed)
+                    {
+                        db.Database.Connection.Open();
+                    }
+                    var settings = db.Settings.ToList();
 
-                    resp = Authenticate(db.Settings.FirstOrDefault(s => s.Key == "KaseyaUser").Value.ToString(), db.Settings.FirstOrDefault(s => s.Key == "KaseyaPassword").Value.ToString(), "SHA-256");
-                    return resp.SessionID;
+                    string user = settings.FirstOrDefault(s => s.Key == "KaseyaUser").Value;
+                    string pw = settings.FirstOrDefault(s => s.Key == "KaseyaPassword").Value;
+
+                    AuthenticationResponse resp = Authenticate(user, pw, "SHA-256"); 
+                    _id = resp.SessionID;
                 }
-                else
-                {
                     return _id;
-                }
             }
             set
             {
@@ -73,19 +78,18 @@ namespace Intake.Helpers.Kaseya
         #endregion
 
         #region Public Methods
-        public object RequestToModel(object req, string Get)
-        {
+        //public object RequestToModel(object req, string Get)
+        //{
 
-            XmlSerializer serializer = new XmlSerializer(req.GetType());
+        //    XmlSerializer serializer = new XmlSerializer(req.GetType());
 
-            string xml = this.ProcessRequest(Get);
+        //    string xml = this.ProcessRequest(Get);
 
-            return serializer.Deserialize(new StringReader(xml));
-        }
+        //    return serializer.Deserialize(new StringReader(xml));
+        //}
 
         public KWS.AuthenticationResponse Authenticate(string UserName, string Password, string HashingAlgorithm)
         {
-
             KWS.AuthenticationRequest req = new KWS.AuthenticationRequest();
 
             //call hash.dll here to encrypt password - ALL CLIENT CODE MUST USE hash.dll
@@ -114,256 +118,302 @@ namespace Intake.Helpers.Kaseya
         public KWS.GetOrgsResponse ProcessRequest(KWS.GetOrgsRequest req)
         {
             req.SessionID = SessionID;
-            return clientWS.GetOrgs(req);
+            var result = clientWS.GetOrgs(req);
+            if (result.ErrorMessage.Contains(""))
+            {
+                SessionID = 0;
+                req.SessionID=SessionID;
+                result = clientWS.GetOrgs(req);
+            }
+            return result;
         }
 
-        public string ProcessRequest(string XmlIn)
+        public KWS.AddUserToScopeResponse ProcessRequest(AddUserToScopeRequest req)
         {
-            //we always set the current SessionID, otherwise KaseyaWS security will fail the transaction
-            string s = SetSessionID(XmlIn);
-
-            // logic ladder identifying the method the xml is meant for.
-            // This is reliable since WebMethods interfaces follow this pattern::
-            // WebMethodName+Response WebMethodName(WebMethodName+Request) 
-            if (s.Contains("<AddMachGroupToScopeRequest>"))
+            req.SessionID = SessionID;
+            var result = clientWS.AddUserToScope(req);
+            if (result.ErrorMessage.Contains(""))
             {
-                // For the "primative" methods, the primative datatype 'string' expresses the data 
-                // and serialization / deserialization occurs on the web server.
-                // We use "primative" here since the test app's UI is XML
-                return clientWS.PrimitiveAddMachGroupToScope(s);
+                SessionID = 0;
+                req.SessionID = SessionID;
+                result = clientWS.AddUserToScope(req);
             }
-            else if (s.Contains("<AddOrgRequest>"))
-            {
-                return clientWS.PrimitiveAddOrg(s);
-            }
-            else if (s.Contains("<AddOrgDepartment>"))
-            {
-                return clientWS.PrimitiveAddOrgDepartment(s);
-            }
-            else if (s.Contains("<AddOrgDeptStaffRequest>"))
-            {
-                return clientWS.PrimitiveAddOrgDeptStaff(s);
-            }
-            else if (s.Contains("<AddOrgToScopeRequest>"))
-            {
-                return clientWS.PrimitiveAddOrgToScope(s);
-            }
-            else if (s.Contains("<AddScopeRequest>"))
-            {
-                return clientWS.PrimitiveAddScope(s);
-            }
-            else if (s.Contains("<AddScopeOrgRequest>"))
-            {
-                return clientWS.PrimitiveAddScopeOrg(s);
-            }
-            else if (s.Contains("<AddTicRequestRequest>"))
-            {
-                return clientWS.PrimitiveAddTicRequest(s);
-            }
-            else if (s.Contains("<AddUserToRoleRequest>"))
-            {
-                return clientWS.PrimitiveAddUserToRole(s);
-            }
-            else if (s.Contains("<AddUserToScopeRequest>"))
-            {
-                return clientWS.PrimitiveAddUserToScope(s);
-            }
-            else if (s.Contains("<CloseAlarmRequest>"))
-            {
-                return clientWS.PrimitiveCloseAlarm(s);
-            }
-            // missing CreateAdmin
-            // missing CreateAgentInstallPackage
-            else if (s.Contains("<CreateRoleRequest>"))
-            {
-                return clientWS.PrimitiveCreateRole(s);
-            }
-            // missing DeleteAdmin
-            // missing DeleteAgent 
-            //DeleteAgentInstallPackage
-            else if (s.Contains("<DeleteMachineGroupRequest>"))
-            {
-                return clientWS.PrimitiveDeleteMachineGroup(s);
-            }
-            else if (s.Contains("<DeleteOrgRequest>"))
-            {
-                return clientWS.PrimitiveDeleteOrg(s);
-            }
-            else if (s.Contains("<DeleteScopeRequest>"))
-            {
-                return clientWS.PrimitiveDeleteScope(s);
-            }
-            //DisableAdmin
-            else if (s.Contains("<EchoMtRequest>"))
-            {
-                return clientWS.PrimitiveEchoMt(s);
-            }
-            //EnableAdmin
-            else if (s.Contains("<GetAlarmRequest>"))
-            {
-                return clientWS.PrimitiveGetAlarm(s);
-            }
-            else if (s.Contains("<GetAlarmListRequest>"))
-            {
-                return clientWS.PrimitiveGetAlarmList(s);
-            }
-            // GetGroupLicenseInfo
-            else if (s.Contains("<GetLogEntryRequest>"))
-            {
-                return clientWS.PrimitiveGetLogEntry(s);
-            }
-            else if (s.Contains("<GetMachineRequest>"))
-            {
-                return clientWS.PrimitiveGetMachine(s);
-            }
-            /*
-            else if (s.Contains("<GetMachineCollectionListRequest>"))
-            {
-                return clientWS.PrimitiveGetMachineCollectionList(s);
-            }
-            */
-            else if (s.Contains("<GetMachineGroupListRequest>"))
-            {
-                return clientWS.PrimitiveGetMachineGroupList(s);
-            }
-            else if (s.Contains("<GetMachineListRequest>"))
-            {
-                return clientWS.PrimitiveGetMachineList(s);
-            }
-            else if (s.Contains("<GetMachineUptimeRequest>"))
-            {
-                return clientWS.PrimitiveGetMachineUptime(s);
-            }
-            else if (s.Contains("<GetNotesListRequest>"))
-            {
-                return clientWS.PrimitiveGetNotesList(s);
-            }
-            else if (s.Contains("<GetOrgLocationRequest>"))
-            {
-                return clientWS.PrimitiveGetOrgLocation(s);
-            }
-            else if (s.Contains("<GetOrgTypesRequest>"))
-            {
-                return clientWS.PrimitiveGetOrgTypes(s);
-            }
-            else if (s.Contains("<GetOrgsRequest>"))
-            {
-                return clientWS.PrimitiveGetOrgs(s);
-            }
-            else if (s.Contains("<GetOrgsByScopeIDRequest>"))
-            {
-                return clientWS.PrimitiveGetOrgsByScopeID(s);
-            }
-            // GetPackageURLs
-            else if (s.Contains("<GetPartnerUserLocationRequest>"))
-            {
-                return clientWS.PrimitiveGetPartnerUserLocation(s);
-            }
-            else if (s.Contains("<GetRolesRequest>"))
-            {
-                return clientWS.PrimitiveGetRoles(s);
-            }
-            else if (s.Contains("<GetScopesRequest>"))
-            {
-                return clientWS.PrimitiveGetScopes(s);
-            }
-            else if (s.Contains("<GetTicRequestTicketRequest>"))
-            {
-                return clientWS.PrimitiveGetTicRequestTicket(s);
-            }
-            else if (s.Contains("<GetTicketRequest>"))
-            {
-                return clientWS.PrimitiveGetTicket(s);
-            }
-            else if (s.Contains("<GetTicketListRequest>"))
-            {
-                return clientWS.PrimitiveGetTicketList(s);
-            }
-            else if (s.Contains("<GetTicketNotes>"))
-            {
-                return clientWS.PrimitiveGetTicketNotes(s);
-            }
-            else if (s.Contains("<GetVerboseMachineGroupListRequest>"))
-            {
-                return clientWS.PrimitiveGetVerboseMachineGroupList(s);
-            }
-            // MergeAgent
-            else if (s.Contains("<MoveMachineToAnotherGroupRequest>"))
-            {
-                return clientWS.PrimitiveMoveMachineToAnotherGroup(s);
-            }
-            else if (s.Contains("<RemoveUserFromRoleRequest>"))
-            {
-                return clientWS.PrimitiveRemoveUserFromRole(s);
-            }
-            else if (s.Contains("<RemoveUserFromScopeRequest>"))
-            {
-                return clientWS.PrimitiveRemoveUserFromScope(s);
-            }
-            //
-            else if (s.Contains("<RenameMachineRequest>"))
-            {
-                return clientWS.PrimitiveRenameMachine(s);
-            }
-            else if (s.Contains("<ResetPasswordRequest>"))
-            {
-                return clientWS.PrimitiveResetPassword(s);
-            }
-            // SetAdminPassword
-            else if (s.Contains("<SetLicenseByOrgRequest>"))
-            {
-                return clientWS.PrimitiveSetLicenseByOrg(s);
-            }
-            else if (s.Contains("<SetPartnerUserLocationRequest>"))
-            {
-                return clientWS.PrimitiveSetPartnerUserLocation(s);
-            }
-            else if (s.Contains("<UpdateOrgRequest>"))
-            {
-                return clientWS.PrimitiveUpdateOrg(s);
-            }
-            else if (s.Contains("<UpdateTicketRequest>"))
-            {
-                return clientWS.PrimitiveUpdateTicket(s);
-            }
-            else if (s.Contains("<UpdateUserRequest>"))
-            {
-                return clientWS.PrimitiveUpdateUser(s);
-            }
-
-            return "Unknown XML";
-
+            return result;
         }
 
-        public string SetSessionID(string payload)
+        public KWS.AssignScopeResponse ProcessRequest(KWS.AssignScopeRequest req)
         {
-            if (SessionID == 0)
+            req.SessionID = SessionID;
+            var result = clientWS.AssignScope(req);
+            if (result.ErrorMessage.Contains(""))
             {
-                AuthenticationResponse resp = null;
-
-                resp = Authenticate(db.Settings.FirstOrDefault(s => s.Key == "KaseyaUser").Value.ToString(), db.Settings.FirstOrDefault(s => s.Key == "KaseyaPassword").Value.ToString(), "SHA-256");
+                SessionID = 0;
+                req.SessionID = SessionID;
+                result = clientWS.AssignScope(req);
             }
-
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.LoadXml(payload);
-
-            XmlNode xNode = xDoc.SelectSingleNode("//SessionID");
-
-            if (xNode != null)
-            {
-                xNode.InnerXml = SessionID.ToString();
-            }
-            else
-            {
-                XmlNode newNode = xDoc.CreateElement("SessionID");
-                newNode.InnerXml = SessionID.ToString();
-                xDoc.DocumentElement.AppendChild(newNode);
-
-            }
-
-            return xDoc.OuterXml;
-
+            return result;
         }
+
+        public KWS.GetScopesResponse ProcessRequest(KWS.GetScopesRequest req)
+        {
+            req.SessionID = SessionID;
+            var result = clientWS.GetScopes(req);
+            if (result.ErrorMessage.Contains(""))
+            {
+                SessionID = 0;
+                req.SessionID = SessionID;
+                result = clientWS.GetScopes(req);
+            }
+            return result;
+        }
+
+        //public string ProcessRequest(string XmlIn)
+        //{
+        //    //we always set the current SessionID, otherwise KaseyaWS security will fail the transaction
+        //    string s = SetSessionID(XmlIn);
+
+        //    // logic ladder identifying the method the xml is meant for.
+        //    // This is reliable since WebMethods interfaces follow this pattern::
+        //    // WebMethodName+Response WebMethodName(WebMethodName+Request) 
+        //    if (s.Contains("<AddMachGroupToScopeRequest>"))
+        //    {
+        //        // For the "primative" methods, the primative datatype 'string' expresses the data 
+        //        // and serialization / deserialization occurs on the web server.
+        //        // We use "primative" here since the test app's UI is XML
+        //        return clientWS.PrimitiveAddMachGroupToScope(s);
+        //    }
+        //    else if (s.Contains("<AddOrgRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddOrg(s);
+        //    }
+        //    else if (s.Contains("<AddOrgDepartment>"))
+        //    {
+        //        return clientWS.PrimitiveAddOrgDepartment(s);
+        //    }
+        //    else if (s.Contains("<AddOrgDeptStaffRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddOrgDeptStaff(s);
+        //    }
+        //    else if (s.Contains("<AddOrgToScopeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddOrgToScope(s);
+        //    }
+        //    else if (s.Contains("<AddScopeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddScope(s);
+        //    }
+        //    else if (s.Contains("<AddScopeOrgRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddScopeOrg(s);
+        //    }
+        //    else if (s.Contains("<AddTicRequestRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddTicRequest(s);
+        //    }
+        //    else if (s.Contains("<AddUserToRoleRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddUserToRole(s);
+        //    }
+        //    else if (s.Contains("<AddUserToScopeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveAddUserToScope(s);
+        //    }
+        //    else if (s.Contains("<CloseAlarmRequest>"))
+        //    {
+        //        return clientWS.PrimitiveCloseAlarm(s);
+        //    }
+        //    // missing CreateAdmin
+        //    // missing CreateAgentInstallPackage
+        //    else if (s.Contains("<CreateRoleRequest>"))
+        //    {
+        //        return clientWS.PrimitiveCreateRole(s);
+        //    }
+        //    // missing DeleteAdmin
+        //    // missing DeleteAgent 
+        //    //DeleteAgentInstallPackage
+        //    else if (s.Contains("<DeleteMachineGroupRequest>"))
+        //    {
+        //        return clientWS.PrimitiveDeleteMachineGroup(s);
+        //    }
+        //    else if (s.Contains("<DeleteOrgRequest>"))
+        //    {
+        //        return clientWS.PrimitiveDeleteOrg(s);
+        //    }
+        //    else if (s.Contains("<DeleteScopeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveDeleteScope(s);
+        //    }
+        //    //DisableAdmin
+        //    else if (s.Contains("<EchoMtRequest>"))
+        //    {
+        //        return clientWS.PrimitiveEchoMt(s);
+        //    }
+        //    //EnableAdmin
+        //    else if (s.Contains("<GetAlarmRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetAlarm(s);
+        //    }
+        //    else if (s.Contains("<GetAlarmListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetAlarmList(s);
+        //    }
+        //    // GetGroupLicenseInfo
+        //    else if (s.Contains("<GetLogEntryRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetLogEntry(s);
+        //    }
+        //    else if (s.Contains("<GetMachineRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetMachine(s);
+        //    }
+        //    /*
+        //    else if (s.Contains("<GetMachineCollectionListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetMachineCollectionList(s);
+        //    }
+        //    */
+        //    else if (s.Contains("<GetMachineGroupListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetMachineGroupList(s);
+        //    }
+        //    else if (s.Contains("<GetMachineListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetMachineList(s);
+        //    }
+        //    else if (s.Contains("<GetMachineUptimeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetMachineUptime(s);
+        //    }
+        //    else if (s.Contains("<GetNotesListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetNotesList(s);
+        //    }
+        //    else if (s.Contains("<GetOrgLocationRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetOrgLocation(s);
+        //    }
+        //    else if (s.Contains("<GetOrgTypesRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetOrgTypes(s);
+        //    }
+        //    else if (s.Contains("<GetOrgsRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetOrgs(s);
+        //    }
+        //    else if (s.Contains("<GetOrgsByScopeIDRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetOrgsByScopeID(s);
+        //    }
+        //    // GetPackageURLs
+        //    else if (s.Contains("<GetPartnerUserLocationRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetPartnerUserLocation(s);
+        //    }
+        //    else if (s.Contains("<GetRolesRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetRoles(s);
+        //    }
+        //    else if (s.Contains("<GetScopesRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetScopes(s);
+        //    }
+        //    else if (s.Contains("<GetTicRequestTicketRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetTicRequestTicket(s);
+        //    }
+        //    else if (s.Contains("<GetTicketRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetTicket(s);
+        //    }
+        //    else if (s.Contains("<GetTicketListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetTicketList(s);
+        //    }
+        //    else if (s.Contains("<GetTicketNotes>"))
+        //    {
+        //        return clientWS.PrimitiveGetTicketNotes(s);
+        //    }
+        //    else if (s.Contains("<GetVerboseMachineGroupListRequest>"))
+        //    {
+        //        return clientWS.PrimitiveGetVerboseMachineGroupList(s);
+        //    }
+        //    // MergeAgent
+        //    else if (s.Contains("<MoveMachineToAnotherGroupRequest>"))
+        //    {
+        //        return clientWS.PrimitiveMoveMachineToAnotherGroup(s);
+        //    }
+        //    else if (s.Contains("<RemoveUserFromRoleRequest>"))
+        //    {
+        //        return clientWS.PrimitiveRemoveUserFromRole(s);
+        //    }
+        //    else if (s.Contains("<RemoveUserFromScopeRequest>"))
+        //    {
+        //        return clientWS.PrimitiveRemoveUserFromScope(s);
+        //    }
+        //    //
+        //    else if (s.Contains("<RenameMachineRequest>"))
+        //    {
+        //        return clientWS.PrimitiveRenameMachine(s);
+        //    }
+        //    else if (s.Contains("<ResetPasswordRequest>"))
+        //    {
+        //        return clientWS.PrimitiveResetPassword(s);
+        //    }
+        //    // SetAdminPassword
+        //    else if (s.Contains("<SetLicenseByOrgRequest>"))
+        //    {
+        //        return clientWS.PrimitiveSetLicenseByOrg(s);
+        //    }
+        //    else if (s.Contains("<SetPartnerUserLocationRequest>"))
+        //    {
+        //        return clientWS.PrimitiveSetPartnerUserLocation(s);
+        //    }
+        //    else if (s.Contains("<UpdateOrgRequest>"))
+        //    {
+        //        return clientWS.PrimitiveUpdateOrg(s);
+        //    }
+        //    else if (s.Contains("<UpdateTicketRequest>"))
+        //    {
+        //        return clientWS.PrimitiveUpdateTicket(s);
+        //    }
+        //    else if (s.Contains("<UpdateUserRequest>"))
+        //    {
+        //        return clientWS.PrimitiveUpdateUser(s);
+        //    }
+
+        //    return "Unknown XML";
+
+        //}
+
+        //public string SetSessionID(string payload)
+        //{
+        //    if (SessionID == 0)
+        //    {
+        //        AuthenticationResponse resp = null;
+
+        //        resp = Authenticate(db.Settings.FirstOrDefault(s => s.Key == "KaseyaUser").Value.ToString(), db.Settings.FirstOrDefault(s => s.Key == "KaseyaPassword").Value.ToString(), "SHA-256");
+        //    }
+
+        //    XmlDocument xDoc = new XmlDocument();
+        //    xDoc.LoadXml(payload);
+
+        //    XmlNode xNode = xDoc.SelectSingleNode("//SessionID");
+
+        //    if (xNode != null)
+        //    {
+        //        xNode.InnerXml = SessionID.ToString();
+        //    }
+        //    else
+        //    {
+        //        XmlNode newNode = xDoc.CreateElement("SessionID");
+        //        newNode.InnerXml = SessionID.ToString();
+        //        xDoc.DocumentElement.AppendChild(newNode);
+
+        //    }
+
+        //    return xDoc.OuterXml;
+
+        //}
 
         #endregion
 
@@ -393,13 +443,13 @@ namespace Intake.Helpers.Kaseya
         #region Private Data Members
 
         SDWS.vsaServiceDeskWS clientWS;
-        KaseyaWSClient authClient;
+        
         #endregion
 
         #region Public Data Members
 
-        public string SessionID;
-
+        public string SessionID = string.Empty;
+        public KaseyaWSClient kWS;
         #endregion
 
         #region Constructors
@@ -408,7 +458,7 @@ namespace Intake.Helpers.Kaseya
         {
             clientWS = new SDWS.vsaServiceDeskWS();
             clientWS.Url = ServicedeskURL;
-            authClient = new KaseyaWSClient(AuthURL);
+            kWS = new KaseyaWSClient(AuthURL);
 
         }
 
@@ -418,13 +468,13 @@ namespace Intake.Helpers.Kaseya
 
         public SDWS.AddIncidentResponse ProcessRequest(SDWS.AddIncidentRequest req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.AddIncident(req);
         }
 
         public SDWS.AddServDeskToScopeResponse ProcessRequest(SDWS.AddServDeskToScopeRequest req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.AddServDeskToScope(req);
         }
 
@@ -433,7 +483,7 @@ namespace Intake.Helpers.Kaseya
             SDWS.GetIncidentListResponse result = new SDWS.GetIncidentListResponse();
             try
             {
-                req.SessionID = authClient.SessionID;
+                req.SessionID = kWS.SessionID;
                 result = clientWS.GetIncidentList(req);
             }
             catch (Exception ex)
@@ -448,31 +498,31 @@ namespace Intake.Helpers.Kaseya
 
         public SDWS.GetIncidentList2Response ProcessRequest(SDWS.GetIncidentList2Request req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.GetIncidentList2(req);
         }
 
         public SDWS.GetIncidentResponse ProcessRequest(SDWS.GetIncidentReq req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.GetIncident(req);
         }
 
         public SDWS.GetServiceDeskResponse ProcessRequest(SDWS.GetServiceDeskRequest req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.GetServiceDesk(req);
         }
 
         public SDWS.GetServiceDesksResponse ProcessRequest(SDWS.GetServiceDesksRequest req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.GetServiceDesks(req);
         }
 
         public SDWS.UpdateIncidentResponse ProcessRequest(SDWS.UpdateIncidentRequest req)
         {
-            req.SessionID = authClient.SessionID;
+            req.SessionID = kWS.SessionID;
             return clientWS.UpdateIncident(req);
         }
 

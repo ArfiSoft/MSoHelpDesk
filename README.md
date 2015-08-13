@@ -16,7 +16,7 @@ With this site it's posible to create or update a ticket in the servicedesk from
 
 ToDo:
 - The popup for the autocompletion needs to be restyled.
-- Show form inputs dynamicly.
-- Get all ticket fields correct before the ticket is saved to Kaseya.
+- Show form inputs dynamicly. Done!!
+- Get all ticket fields correct before the ticket is saved to Kaseya. Done!!
 - Fix the scope issue, only the organizations and tickets are returnd from the scope of the user used to log in the Kaseya API.
 

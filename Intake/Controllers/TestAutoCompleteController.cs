@@ -34,5 +34,12 @@ namespace Intake.Controllers
         {
             return Json(TicketNumbers.GetTicketLikeName(text,ServiceDesk,Org), JsonRequestBehavior.AllowGet);
         }
+
+        // GET: /AutoComplete/
+        [Authorize]
+        public ActionResult GetScopes(string searchHint)
+        {
+            return Json(TicketNumbers.GetTicketLikeName(searchHint), JsonRequestBehavior.AllowGet);
+        }
     }
 }

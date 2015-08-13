@@ -1,15 +1,15 @@
 ﻿/// <reference path="CustomAutoComplete.js" />
 function ticketChange() {
-    alert('Change');
+    //alert('Change');
     if ($("#Ticket").val().length > 0 && $('#Ticket_AutoComplete').val().length > 0) {
-        alert('1');
+        //alert('1');
         if ($('#fg7').hasClass('hidden')) {
-            alert('2');
+            //alert('2');
             $('#fg7').removeClass('hidden');
-            alert('3');
+            //alert('3');
         }
     } else {
-        alert('4');
+        //alert('4');
         if ($('#fg7').hasClass('hidden') == false) {
             $('#fg7').addClass('hidden');
         }
@@ -122,7 +122,7 @@ function InitControls() {
         }
     });
     $("input:hidden[name='Compagny']").change(function () {
-        alert('Vuur!!');
+        //alert('Vuur!!');
         if ($("#Compagny_AutoComplete").val().length > 0 &&
             $("#ContactName").val().length > 0 &&
             $("#ContactPhone").val().length > 0) {

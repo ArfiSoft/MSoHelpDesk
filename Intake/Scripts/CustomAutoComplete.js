@@ -12,15 +12,30 @@ function BindAutoComplete() {
     $('[data-autocomplete]').each(function (index, element) {
         var sourceurl = $(element).attr('data-sourceurl');
         var autocompletetype = $(element).attr('data-autocompletetype');
-        //alert('Compagny:'+index);
+        //Load Lists
+        var d = null;
+        if (autocompletetype == 'ticket') {
+            var org = "";
+            var sd = "";
+            var text = "";
+            d = { Text: text, Org: org, ServiceDesk: sd };
+        }
+        else {
+            d = { searchHint: "" };
+        }
+        $.ajax({
+            url: sourceurl,
+            dataType: "json",
+            data: d,
+            error: function (data) {
+                alert('Fout bij het ophalen van de ' + autocompletetype + 's: ' + data);
+            }
+        });
 
         $(element).autocomplete({
             source: function (request, response) {
                 var d = null;
                 if (autocompletetype == 'ticket') {
-                    //alert('Ticket filter');
-                    //var orgId = -79228162514264337593543950335;
-                    //alert(orgId);
                     var org = $('#Compagny_AutoComplete').val();
                     var sdName_ac = $('#ServiceDesk_AutoComplete').val();
                     if (sdName_ac == "") {
@@ -59,11 +74,18 @@ function BindAutoComplete() {
                                     selectedValue: item.ID
                                 };
                             }
+                            else if (autocompletetype == 'scope') {
+                                return {
+                                    label: item.ScopeID,
+                                    value: item.ScopeID,
+                                    selectedValue: item.ID
+                                };
+                            }
                         }));
                     },
                     error: function (data) {
-                        alert(data);
-                    },
+                        alert('Fout bij het ophalen van de ' + autocompletetype + 's: ' + data);
+                    }
                 });
             },
             select: function (event, ui) {
@@ -85,7 +107,17 @@ function BindAutoComplete() {
                     $("input[name='" + valuetarget + "_AutoComplete").val('');
                     $("input[name='" + valuetarget + "_AutoComplete").focus();
                 }
-            }
+            },
+            //focus: function (event, ui) {
+            //    $.ajax({
+            //        url: sourceurl,
+            //        dataType: "json",
+            //        data: "",
+            //        error: function (data) {
+            //            alert(data);
+            //        }
+            //    });
+            //}
         });
-    });
-}
+    })
+    }

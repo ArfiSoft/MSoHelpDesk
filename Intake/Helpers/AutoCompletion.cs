@@ -12,7 +12,8 @@ namespace Intake.Helpers.Autocomplete
     {
         ServiceDeskName,
         Compagny,
-        Ticket
+        Ticket,
+        Scopes
     }
     public static class AutoCompleteHelper
     {
@@ -32,7 +33,8 @@ namespace Intake.Helpers.Autocomplete
                 actionUrl = acpath + "GetServiceDeskName";
             else if (autoCompleteType == AutoCompleteType.Ticket)
                 actionUrl = acpath + "GetTicket";
-
+            else if (autoCompleteType == AutoCompleteType.Scopes)
+                actionUrl = acpath + "GetScopes";
             return GetAutocompleteString(helper, name, value, text, autoCompleteType, actionUrl, isRequired: isRequired, viewhtmlAttributes: viewhtmlAttributes, onselectfunction: onselectfunction);
         }
         private static MvcHtmlString GetAutocompleteString(HtmlHelper helper, string name, string value, string text, AutoCompleteType autoCompleteType, string actionUrl = "", bool? isRequired = false, IDictionary<string, object> viewhtmlAttributes = null, string onselectfunction = "")
@@ -86,6 +88,8 @@ namespace Intake.Helpers.Autocomplete
                 actionUrl = acpath + "GetServiceDeskName";
             else if (autoCompleteType == AutoCompleteType.Ticket)
                 actionUrl = acpath + "GetTicket";
+            else if (autoCompleteType == AutoCompleteType.Scopes)
+                actionUrl = acpath + "GetScopes";
 
             return GetAutocompleteForString(helper, expression, DisplayProperty, autoCompleteType, actionUrl, isRequired: isRequired, viewhtmlAttributes: viewhtmlAttributes, onselectfunction: onselectfunction);
         }

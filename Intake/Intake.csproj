@@ -59,6 +59,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -128,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestAutoCompleteController.cs" />
     <Compile Include="Helpers\AutoCompletion.cs" />
@@ -367,6 +369,7 @@
     <Content Include="Web References\KWS\GetVerboseMachineGroupListResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Web References\KWS\KaseyaWS.wsdl" />
     <Content Include="Web References\KWS\LockFunctionAccessResponse.datasource">
       <DependentUpon>Reference.map</DependentUpon>

@@ -3,7 +3,9 @@ using Intake.SDWS;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.DirectoryServices;
 using System.Linq;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 
@@ -18,7 +20,7 @@ namespace Intake.Controllers
         private static Helpers.Kaseya.KaseyaWSClient KasClient = new Helpers.Kaseya.KaseyaWSClient(db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
         private static Helpers.Kaseya.ServiceDeskWSClient sDesk = new Helpers.Kaseya.ServiceDeskWSClient(db.Settings.FirstOrDefault(s => s.Key == "ServiceDeskURI").Value, db.Settings.FirstOrDefault(s => s.Key == "KaseyaURI").Value);
 
-
+        #region Cookie
         private void WriteCoockie(string Name, string Value)
         {
             HttpCookie cookie = new HttpCookie(Name,Value);
@@ -48,6 +50,88 @@ namespace Intake.Controllers
                 return "";
             }
         }
+        #endregion
+
+        private string uEmail(string uid)
+        {
+            DirectorySearcher dirSearcher = new DirectorySearcher();
+            DirectoryEntry entry = new DirectoryEntry(dirSearcher.SearchRoot.Path);
+            IPrincipal userPrincipal = HttpContext.User;
+            WindowsIdentity windowsId = userPrincipal.Identity as WindowsIdentity;
+            
+            //dirSearcher.Filter = "(&(objectClass=user)(objectcategory=person)(LDAP://<SID=" + windowsId.User.Value + ">))";
+            using (DirectoryEntry userDirectoryEntry = new DirectoryEntry("LDAP://<SID=" + windowsId.User.Value + ">"))
+            {
+                try
+                {
+                    return userDirectoryEntry.Properties["mail"].ToString();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+        }
+
+        private class UserInfo
+        {
+            public string FullName { get; set; }
+            public string Email { get; set; }
+            public string Phone { get; set; }
+        }
+        private UserInfo GetUserInfo(string uid)
+        {
+            UserInfo result = new UserInfo();
+
+            //DirectorySearcher dirSearcher = new DirectorySearcher();
+            //DirectoryEntry entry = new DirectoryEntry(dirSearcher.SearchRoot.Path);
+            IPrincipal userPrincipal = HttpContext.User;
+            WindowsIdentity windowsId = userPrincipal.Identity as WindowsIdentity;
+
+            //dirSearcher.Filter = "(&(objectClass=user)(objectcategory=person)(LDAP://<SID=" + windowsId.User.Value + ">))";
+            using (DirectoryEntry userDirectoryEntry = new DirectoryEntry("LDAP://<SID=" + windowsId.User.Value + ">"))
+            {
+                try
+                {
+                    result.Email = userDirectoryEntry.Properties["mail"].Value.ToString();
+                    result.FullName = userDirectoryEntry.Properties["cn"].Value.ToString();
+                    result.Phone = userDirectoryEntry.Properties["telephoneNumber"].Value.ToString();
+                }
+                catch(Exception ex)
+                {
+                    
+                }
+            }
+
+            return result;
+        }
+        private string uFullName(string uid)
+        {
+            DirectorySearcher dirSearcher = new DirectorySearcher();
+            DirectoryEntry entry = new DirectoryEntry(dirSearcher.SearchRoot.Path);
+            IPrincipal userPrincipal = HttpContext.User;
+            WindowsIdentity windowsId = userPrincipal.Identity as WindowsIdentity;
+
+            //dirSearcher.Filter = "(&(objectClass=user)(objectcategory=person)(LDAP://<SID=" + windowsId.User.Value + ">))";
+            using (DirectoryEntry userDirectoryEntry = new DirectoryEntry("LDAP://<SID=" + windowsId.User.Value + ">"))
+            {
+                try
+                {
+                    return userDirectoryEntry.Properties["cn"].ToString();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+        }
+
+        private string GetAssignee(ServiceDeskDefinition ServiceDeskDef)
+        {
+            var assignee = ServiceDeskDef.Participants.FirstOrDefault(p => p.@ref.Contains(ServiceDeskDef.Name) && p.@ref.Contains("Eerstelijn"));
+
+            return assignee.@ref;
+        }
 
         private IntakeFormModel initModel()
         {
@@ -73,7 +157,6 @@ namespace Intake.Controllers
 
             return model;
         }
-
 
         private KWS.Org FindCustomer(string Name)
         {
@@ -102,13 +185,85 @@ namespace Intake.Controllers
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);
         }
 
+        private Incident CreateTicket(string ServiceDesk)
+        {
+            Incident ticket = new Incident();
+            string InitString;
+
+            if (ServiceDesk == "MSO_Servicedesk")
+            {
+                InitString = "MSO_Eerstelijn";
+            }
+            else
+            {
+                InitString = "VDT_Eerstelijn";
+            }
+
+            GetServiceDeskRequest sdReq = new GetServiceDeskRequest();
+            ServiceDeskDefinitionRequest sdFilter = new ServiceDeskDefinitionRequest();
+            sdFilter.ServiceDeskName = ServiceDesk;
+            sdReq.ServiceDeskDefinitionRequest = sdFilter;
+
+            var sdRes = sDesk.ProcessRequest(sdReq);
+
+            //Default Ticket Config           
+            ticket.AssigneeType = Intake.SDWS.AssigneeType.POOL;
+            ticket.Assignee = GetAssignee(sdRes.ServiceDeskDefinitionResponse);
+            ticket.AssigneeTypeSpecified = true;
+            //ticket.AssigneeEmail = ""; //ToDo: somthing to find the correct name and email.
+            ticket.EditingTemplate = sdRes.ServiceDeskDefinitionResponse.EditingTemplate;
+            ticket.IsUnread = true;
+            ticket.IsUnreadSpecified = true;
+            ticket.LastEditDateTime = DateTime.Now;
+            ticket.LastEditDateTimeSpecified = true;
+            ticket.Policy = sdRes.ServiceDeskDefinitionResponse.DefaultPolicy;
+            ticket.Priority = sdRes.ServiceDeskDefinitionResponse.Priority[0].@ref;
+            ticket.ServiceDeskDefinition = sdRes.ServiceDeskDefinitionResponse;
+            ticket.ServiceDeskName = sdRes.ServiceDeskDefinitionResponse.Name;
+            ticket.Severity = sdRes.ServiceDeskDefinitionResponse.Severity.FirstOrDefault(s => s.id == sdRes.ServiceDeskDefinitionResponse.DefaultSeverity).@ref;
+            ticket.SourceType = SourceType.Other;
+            ticket.SourceTypeSpecified = true;
+            ticket.Stage = sdRes.ServiceDeskDefinitionResponse.Stages.FirstOrDefault(s => s.Initialization == InitString).Item.@ref;
+            ticket.Status = sdRes.ServiceDeskDefinitionResponse.Status.FirstOrDefault(s => s.Value == "Nieuw").@ref;
+            var user = GetUserInfo(User.Identity.Name);
+            ticket.Submitter = user.FullName;
+            ticket.SubmitterEmail = user.Email;
+            ticket.SubmitterPhone = user.Phone;
+            var extraFields = sdRes.ServiceDeskDefinitionResponse.CustomFields;
+            List<SDWS.CustomField> list = new List<SDWS.CustomField>();
+            foreach (var item in extraFields)
+            {
+                CustomField cf = new CustomField();
+
+                cf.fieldName = item.FieldName;
+                if (cf.fieldName == "Urgentie")
+                {
+                    cf.Value = "1 - Laag";
+                }
+                else if (cf.fieldName == "Afkomst")
+                {
+                    cf.Value = "Telefoon";
+                }
+                else if (cf.fieldName == "Afkomst")
+                {
+                    cf.Value = "Telefoon";
+                }
+                {
+                    cf.Value = item.DefaultValue;
+                }
+                list.Add(cf);
+            }
+            ticket.CustomFields = list.ToArray();
+
+            return ticket;
+        }
+
         [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult SaveTicket(IntakeFormModel model)
         {
             AddIncidentRequest req = new AddIncidentRequest();
-            Incident ticket = new Incident();
-
+            
             string sum;
             string desc;
             
@@ -122,27 +277,19 @@ namespace Intake.Controllers
 
                 //Write last selected in cookie
                 WriteCoockie("ServiceDeskName", model.ServiceDesk_AutoComplete);
-                WriteCoockie("LastRequestType", model.VerzoekType.ToString());
+                //WriteCoockie("LastRequestType", model.VerzoekType.ToString());
 
-                //Default Ticket Config           
-                ticket.AssigneeType = Intake.SDWS.AssigneeType.POOL;
-                ticket.Assignee = "Eerstelijn";
-                ticket.AssigneeEmail = ""; //ToDo: somthing to find the correct name and email.
 
                 if (model.VerzoekType == 1)
                 {
                     //Terugbelverzoek
                     try {
+                        Incident ticket = CreateTicket(model.ServiceDesk_AutoComplete);
                         desc = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny_AutoComplete, model.ContactPhone, model.Message);
                         sum = string.Format("Dhr/mevr {0} heeft gebeld met het verzoek om teruggebeld te worden.", model.ContactName);
                         ticket.Description = desc;
-                        ticket.IsUnread = true;
-                        ticket.Organization = model.Compagny_AutoComplete;
+                        ticket.Organization = model.Compagny;
                         ticket.OrganizationName = model.Compagny_AutoComplete;
-                        ticket.OrganizationStaffName = model.ContactName;
-                        ticket.ServiceDeskName = model.ServiceDesk;
-                        ticket.Submitter = model.ContactName;
-                        ticket.SubmitterPhone = model.ContactPhone;
                         ticket.Summary = sum;
                         SDWS.AddIncidentRequest newTicket = new AddIncidentRequest();
                         newTicket.AddSDIncident = ticket;
@@ -179,18 +326,22 @@ namespace Intake.Controllers
                         r.IncidentRequest = filter;
 
                         var responce = sDesk.ProcessRequest(r);
-                        //NotesList = responce.IncidentResponse.Notes.ToList<SDWS.Note>();
-
+                        var updated = responce.IncidentResponse;
+                        updated.LastEditDateTime = DateTime.Now;
+                        updated.LastEditDateTimeSpecified = true;
+                        if (updated.Notes != null)
+                        {
+                            foreach (var note in updated.Notes)
+                            {
+                                NotesList.Add(note);
+                            }
+                        }
                         n.Text = string.Format("Dhr/mevr {0} van {1} heeft gebeld met het verzoek om teruggebeld te worden op {2}.<br />Bericht:<br />{3}", model.ContactName, model.Compagny_AutoComplete, model.ContactPhone, model.Message);
                         NotesList.Add(n);
-
-                        ticket.id = responce.IncidentResponse.id;
-                        ticket.IncidentNumber = responce.IncidentResponse.IncidentNumber;
-                        ticket.IsUnread = true;
-                        ticket.Notes = NotesList.ToArray();
-
+                        updated.Notes = NotesList.ToArray();
+                        
                         SDWS.UpdateIncidentRequest update = new UpdateIncidentRequest();
-                        update.UpdateSDIncident = ticket;
+                        update.UpdateSDIncident = updated;
 
                         SDWS.UpdateIncidentResponse responce2 = sDesk.ProcessRequest(update);
                         if (responce2.ErrorMessage.Length > 0)
@@ -201,8 +352,8 @@ namespace Intake.Controllers
                         }
                         else
                         {
-                            MessageTitle = string.Format("Terugbel verzoek voor ticket {0} aangemaakt", ticket.IncidentNumber);
-                            MessageDisplay = string.Format("Voor {0} is er een terugbelverzoek aangemaakt onder ticket {1}.", model.ContactName, responce.IncidentResponse.IncidentNumber);
+                            MessageTitle = string.Format("Terugbel verzoek voor ticket {0} aangemaakt", updated.IncidentNumber);
+                            MessageDisplay = string.Format("Voor {0} is er een terugbelverzoek aangemaakt onder ticket {1}.", model.ContactName, updated.IncidentNumber);
                         }
                     } catch (Exception e)
                     {
@@ -216,17 +367,13 @@ namespace Intake.Controllers
                     //Nieuwe incident
                     try
                     {
+                        Incident ticket = CreateTicket(model.ServiceDesk_AutoComplete);
                         sum = string.Format("Ticket aangemaakt voor {0} van {1}", model.ContactName, model.Compagny_AutoComplete);
                         desc = string.Format("{0} heeft het volgende gemeld.<br />Omschrijving:<br />{1}<br /><br />{0} is bereikbaar op {2}"
                             , model.ContactName, model.Message, model.ContactPhone);
                         ticket.Description = desc;
-                        ticket.IsUnread = true;
-                        ticket.Organization = model.Compagny_AutoComplete;
+                        ticket.Organization = model.Compagny;
                         ticket.OrganizationName = model.Compagny_AutoComplete;
-                        ticket.OrganizationStaffName = model.ContactName;
-                        ticket.ServiceDeskName = model.ServiceDesk_AutoComplete;
-                        ticket.Submitter = model.ContactName;
-                        ticket.SubmitterPhone = model.ContactPhone;
                         ticket.Summary = sum;
                         
                         SDWS.AddIncidentRequest newTicket = new AddIncidentRequest();
@@ -262,21 +409,27 @@ namespace Intake.Controllers
 
                         filter.IncidentNumber = model.Ticket;
                         r.IncidentRequest = filter;
-
+                        r.IncidentRequest.IncludeNotes = true;
+                        
                         var responce = sDesk.ProcessRequest(r);
-                        //NotesList = responce.IncidentResponse.Notes.ToList<SDWS.Note>();
 
+                        var updated = responce.IncidentResponse;
+                        updated.LastEditDateTime = DateTime.Now;
+                        updated.LastEditDateTimeSpecified = true;
+                        if (updated.Notes != null)
+                        {
+                            foreach (var note in updated.Notes)
+                            {
+                                NotesList.Add(note);
+                            }
+                        }
                         n.Text = string.Format("Dhr/mevr {0} van {1} heeft een aanvulling gedaan op ticket {2}.<br />Bericht:<br />{3}<br /><br />{0} is bereikbaar op {4}.", model.ContactName, model.Compagny_AutoComplete, responce.IncidentResponse.IncidentNumber, model.ContactPhone, model.Message);
                         NotesList.Add(n);
-
-                        ticket.id = responce.IncidentResponse.id;
-                        ticket.IncidentNumber = responce.IncidentResponse.IncidentNumber;
-                        ticket.IsUnread = true;
-                        ticket.Notes = NotesList.ToArray();
-
+                        updated.Notes = NotesList.ToArray();
+                                                
                         SDWS.UpdateIncidentRequest update = new UpdateIncidentRequest();
-                        update.UpdateSDIncident = ticket;
-
+                        update.UpdateSDIncident = updated;
+                        
                         SDWS.UpdateIncidentResponse responce2 = sDesk.ProcessRequest(update);
                         if (responce2.ErrorMessage.Length > 0)
                         {
@@ -314,7 +467,7 @@ namespace Intake.Controllers
             note.SuppressNotify = false;
             note.Text = "";
             note.Timestamp = DateTime.Now;
-            note.User = "System-Intake";
+            note.User = "kaseyasupport";
             note.Hidden = false;
             return note;
         }

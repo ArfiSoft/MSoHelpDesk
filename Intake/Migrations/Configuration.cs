@@ -11,7 +11,7 @@ namespace Intake.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Intake.Models.SettingsContext context)
@@ -23,7 +23,8 @@ namespace Intake.Migrations
                 new Setting {Key = "KaseyaPassword", Value = "" },
                 new Setting {Key = "Helpdesk_Connect_It_KWS_KaseyaWS", Value = "" },
                 new Setting {Key = "Helpdesk_Connect_It_SDWS_vsaServiceDeskWS", Value = "" },
-                new Setting {Key = "ServiceDeskURI", Value = "" }                
+                new Setting {Key = "ServiceDeskURI", Value = "" },
+                new Setting {Key = "DefaultScope", Value = "" }                
             };
 
             Settings.ForEach(s => context.Settings.AddOrUpdate(s));
