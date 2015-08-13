@@ -5,9 +5,25 @@
 }
 
 <div class="jumbotron">
-    <h1>ViaData ServiceDesk telefoonnotities</h1>
+    <h1>ViaData ServiceDesk telefoon-notities</h1>
 </div>
-
+@if (ViewBag.MessageTitle != null && ViewBag.MessageTitle != string.Empty)
+{
+    if (ViewBag.MessageSucces)
+    {
+        <div class="alert alert-success fade in">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
+        </div>
+    }
+}
 @using (Html.BeginForm("SaveTicket", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -20,11 +36,11 @@
         <div id="fg1" class="form-group">
             <label class="col-md-4 control-label" for="ServiceDeskName">Servicedesk</label>
             <div class="col-md-5">
-                @Html.AutocompleteFor(m=>m.ServiceDesk, @Model.ServiceDesk, AutoCompleteType.ServiceDeskName,true)
+                @Html.AutocompleteFor(m => m.ServiceDesk, @Model.ServiceDesk, AutoCompleteType.ServiceDeskName, true)
                 @*<select id="ServiceDeskName" name="ServiceDeskName" class="form-control">
-                    <option value="1">Infra</option>
-                    <option value="2">MSo</option>
-                </select>*@
+                        <option value="1">Infra</option>
+                        <option value="2">MSo</option>
+                    </select>*@
             </div>
         </div>
 
@@ -96,22 +112,4 @@
         </div>
 
     </fieldset>
-    if (ViewBag.MessageTitle !=null && ViewBag.MessageTitle != string.Empty)
-    {
-        if (ViewBag.MessageSucces)
-        {
-            <div class="alert alert-success fade in">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-danger fade in">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>@ViewBag.MessageTitle</strong><br />@ViewBag.MessageDisplay
-            </div>
-        }
-    }
-    
 }
